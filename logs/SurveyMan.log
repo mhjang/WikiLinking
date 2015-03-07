@@ -1,0 +1,3 @@
+[36m04 Mar 2015 16:07:00,797 edu.umass.cs.surveyman.survey.Survey.jsonize(Survey.java:240)
+	DEBUG [main]: { "filename" : "null", "breakoff" :  true, "survey" : [ { "id" : "1", "questions" : [ { "id" : "q_1_0", "qtext" : "asdf" } ]  }, { "id" : "1", "questions" : [ { "id" : "q_2_0", "qtext" : "fdsa" } ]  }, { "id" : "1", "questions" : [ { "id" : "q_3_0", "qtext" : "foo" , "ordered" : true} ]  }, { "id" : "1", "questions" : [ { "id" : "q_4_0", "qtext" : "aaa" }, { "id" : "q_5_0", "qtext" : "bbb" } ]  } ] }
+[m
