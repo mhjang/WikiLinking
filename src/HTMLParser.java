@@ -50,10 +50,10 @@ public class HTMLParser  {
 
                 }
                 SimpleFileWriter sw = new SimpleFileWriter(outDir + file);
-           //     sw.writeLine(parser.getPlainString(builder.toString()));
+                sw.writeLine(parser.getPlainString(builder.toString()));
            //     System.out.println(builder.toString());
              //
-                parser.splitDocument(builder.toString());
+           //     parser.splitDocument(builder.toString());
                 sw.close();
 
             }

@@ -25,6 +25,7 @@ public class StopWordRemover {
                 String line = sr.readLine().replace("\n","");
                 stopwords.add(line.toLowerCase().trim());
             }
+            sr.close();
         }catch(Exception e) {
             e.printStackTrace();
         }

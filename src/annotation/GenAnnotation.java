@@ -1,90 +1,110 @@
 package annotation;
 
+import db.DBConnector;
+import myungha.DirectoryReader;
 import myungha.SimpleFileWriter;
 
 import java.io.IOException;
+import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * Created by mhjang on 3/4/15.
  */
 public class GenAnnotation {
+    String annotationDir;
     public static void main(String[] args) {
-        GenAnnotation gen = new GenAnnotation();
-        ArrayList<String> list = new ArrayList<String>();
-        list.add("Homeopathy");
-        list.add("Hello World");
-        list.add("Bagels");
-        gen.generateAnnotationPage("clueweb09-en0000-02-02422", list);
+  //      GenAnnotation gen = new GenAnnotation();
+   //        gen.generateAnnotationPage("clueweb09-en0000-02-02422", list);
+        traceMiscellaneous();
     }
 
-    public GenAnnotation() {
-
+    public GenAnnotation(String dir) {
+        this.annotationDir = dir;
+        if(!annotationDir.endsWith("/"))
+            annotationDir += "/";
     }
 
-    public void generateAnnotationPage(String cluewebId, ArrayList<String> list) {
+    public void generateAnnotationPage(String cluewebId, HashSet<String> list) {
         try {
-            SimpleFileWriter sw = new SimpleFileWriter(cluewebId + ".html");
+            SimpleFileWriter sw = new SimpleFileWriter(annotationDir + cluewebId + ".html");
             StringBuilder builder = new StringBuilder();
 
-            builder.append("<!DOCTYPE html>\n" +
+            builder.append("<!DOCTYPE text/html>\n" +
                     "<html lang=\"en\">\n" +
                     "  <head>\n" +
                     "    <meta charset=\"utf-8\">\n" +
                     "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n" +
                     "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n" +
-                    "    <title>Bootstrap 101 Template</title>\n" +
-                    "    <link href=\"/Users/mhjang/Downloads/bootstrap-3.3.2-dist/css/bootstrap.css\" rel=\"stylesheet\">\n" +
+                    "    <link href=\"css/bootstrap.css\" rel=\"stylesheet\">\n" +
                     "  </head>\n" +
                     "  <body>\n" +
+                    "  <h4>2. Read the webpage </h4>\n" +
                     "  <table width=100%>\n" +
                     "  <tr>\n" +
-                    "  <td width=60%>\n" +
-                    "    <h2>Welcome mhjang!</h2>\n" +
-                    "    <iframe width=100% height=800px src=\"/Users/mhjang/Desktop/Research/WikiLinking/data/clueweb_pages/" + cluewebId + ".html\"> </iframe>\n" +
+                    " <?PHP session_start(); ?>\n" +
+                    "  <td width=65% valign=\"top\">\n" +
+                    "    <iframe width=100% height=800px src=\"clueweb_pages/"+cluewebId+".html\" frameborder=0> </iframe>\n" +
                     "   </td>\n" +
-                    "\t<td>\n" +
-                    "<FORM name =\"form1\" method =\"post\" action =\"sendQuery.php\">\n" +
-                            "  \t<input type=\"hidden\" name=\"clueweb_id\" value = '"+ cluewebId + "'>"+
+                    "\t<td width=35% valign=\"top\">\n" +
+                    "\t\n" +
+                    "\n" +
+                    "\t<h4>3. Judge the relevance </h4>\n" +
+                    "<FORM name =\"form1\" id = \"annotationForm\" method =\"post\">\n" +
+                    "  \t<input type=\"hidden\" name=\"clueweb_id\" value = \""+cluewebId + "\">\n" +
                     "\t<div class=\"list-group\">\n" +
                     "  <a href=\"#\" class=\"list-group-item active\">\n" +
                     "\tWikipedia Articles\n" +
                     "  </a>\n");
-            for(String wikiTitle : list) {
-                        builder.append("  <a href=\"http://en.wikipedia.org/wiki/\"" + wikiTitle + "\" class=\"list-group-item\">\n" +
-                                "  \t<h4 class=\"list-group-item-heading\">" + wikiTitle + "</h4>\n" +
-                                "<input type=\"hidden\" name=\"w1_title\" value = \"" + wikiTitle + "\">" +
-                                "<div class=\"btn-group\" data-toggle=\"buttons\">\n" +
-                                "  <label class=\"btn btn-notsure\">\n" +
-                                "    <input type=\"radio\" name=\"w1\" id=\"option1\" value = \"1\" autocomplete=\"off\" checked> Not sure\n" +
-                                "  </label>\n" +
-                                "  <label class=\"btn btn-primary\">\n" +
-                                "    <input type=\"radio\" name=\"w1\" id=\"option1\" value = \"2\" autocomplete=\"off\" checked> Relevant\n" +
-                                "  </label>\n" +
-                                "  <label class=\"btn btn-somewhat\">\n" +
-                                "    <input type=\"radio\" name=\"w1\" id=\"option2\" value = \"3\" autocomplete=\"off\">  Somewhat\n" +
-                                "  </label>\n" +
-                                "  <label class=\"btn btn-relevant\">\n" +
-                                "    <input type=\"radio\" name=\"w1\" id=\"option3\" value = \"4\" autocomplete=\"off\">  Irrelevant\n" +
-                                "  </label>\n" +
-                                "  </div> </a>\n");
-                    };
 
-                    builder.append("\n" +
+            int idx = 0;
+            builder.append("<input type =\"hidden\" name=\"size\" value=\""+list.size()+"\">");
+            for(String item : list) {
+                item = item.replace(".html", "");
+                builder.append("<a href=\"http://en.wikipedia.org/wiki/" + item + "\" target=\"_blank\" class=\"list-group-item\">\n" +
+                        "  \t<h4 class=\"list-group-item-heading\">" + item.replace("_", " ") + "</h4>\n" +
+                        "  \t<input type=\"hidden\" name=\"w"+idx+"_title\" value = \"" + item + "\">\n" +
+                        "<div class=\"btn-group\" data-toggle=\"buttons\">\n" +
+                        "  <label class=\"btn btn-notsure\">\n" +
+                        "    <input type=\"radio\" name=\"w"+idx+"\" id=\"option0\" value = \"0\" autocomplete=\"off\"> Not sure\n" +
+                        "  </label>\n" +
+                        "  <label class=\"btn btn-primary\">\n" +
+                        "    <input type=\"radio\" name=\"w"+idx+"\" id=\"option1\" value = \"1\" autocomplete=\"off\"> Highly on\n" +
+                        "  </label>\n" +
+                        "  <label class=\"btn btn-slightlyon\">\n" +
+                        "    <input type=\"radio\" name=\"w"+idx+"\" id=\"option2\" value = \"2\" autocomplete=\"off\"> Slightly on\n" +
+                        "  </label>\n" +
+                        "  <label class=\"btn btn-somewhat\">\n" +
+                        "    <input type=\"radio\" name=\"w"+idx+"\" id=\"option3\" value = \"3\" autocomplete=\"off\"> Slightly off\n" +
+                        "  </label>\n" +
+                        "  <label class=\"btn btn-relevant\">\n" +
+                        "    <input type=\"radio\" name=\"w"+idx+"\" id=\"option4\" value = \"4\" autocomplete=\"off\"> Highly off\n" +
+                        "  </label>\n" +
+                        "  </div>\n" +
+                        "\n" +
                         "\n" +
                         "</p>\n" +
-                        "  </a>\n" +
-                            "<p><Input type = \"submit\" name = \"submit1\" button type=\"button\" class=\"btn btn-default btn-lg btn-block\">Send Annotations</button></p></form>" +
-                            "\t</div>\n" +
-                        "\t</td>\n" +
-                        "\t</tr></table>\n" +
+                        "  </a>\n");
+                idx++;
+            }
+            builder.append("<br><br>\n" +
+                    "<p><Input type = \"submit\" id=\"submitButton\" name = \"submit1\" button type=\"button\" value=\"Save Choices\" class=\"btn btn-default btn-lg btn-block\"></button></p>\n" +
+                    "</form>\n" +
+                    "\t</div>\n" +
+                    "\t</td>\n" +
+                    "\t</tr></table>\n" +
                     "    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->\n" +
                     "    <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js\"></script>\n" +
                     "    <!-- Include all compiled plugins (below), or include individual files as needed -->\n" +
-                    "    <script src=\"/Users/mhjang/Downloads/bootstrap-3.3.2-dist/js/bootstrap.min.js\"></script>\n" +
-                    "  </body>\n" +
-                    "</html>");
-
+                    "    <script src=\"js/bootstrap.min.js\"></script>\n" +
+                    "<script>$(document).ready(function() { \n" +
+                            "$('#submitButton').click(function() { \n"
+                    + " var f = $('#annotationForm');\n" +
+                    "$.ajax({ type: \"POST\", url: \"sendQuery.php\", data: f.serialize()}); \n"
+                    + "alert(\"Thanks for your submission!\");"+
+                    "});\n }); \n</script>" +
+                    "  </body>\n </html>");
 
             sw.writeLine(builder.toString());
             sw.close();
@@ -94,4 +114,34 @@ public class GenAnnotation {
 
     }
 
+    // find annotation pages that were not categorized by the topic list
+    public static void traceMiscellaneous() {
+
+        DBConnector db = new DBConnector("jdbc:mysql://ayr.cs.umass.edu:3306/","wikilinking");
+
+    /*
+        DirectoryReader dr = new DirectoryReader("/Users/mhjang/Desktop/Research/WikiLinking/data/annotation");
+        for(String filename : dr.getFileNameList()) {
+            filename = filename.replace(".html", "");
+            db.sendQuery("INSERT into annotation_pages values ('" + filename + "')");
+        }
+*/
+
+        try {
+            ResultSet rs = db.getQueryResult("Select * from topic_list");
+            DBConnector db2 = new DBConnector("jdbc:mysql://ayr.cs.umass.edu:3306/","wikilinking");
+
+            while (rs.next()) {
+                String topic = rs.getString("title");
+                System.out.println("insert into categorized_page (select distinct clueweb_id from rating where wiki_title like '% " + topic + " %')");
+                db2.sendQuery("insert into categorized_page (select distinct clueweb_id from rating where wiki_title like '% " + topic + " %')");
+            }
+            db2.closeConnection();
+
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
+        db.closeConnection();
+
+    }
 }
