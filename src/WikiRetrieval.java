@@ -9,7 +9,7 @@ import org.lemurproject.galago.core.retrieval.query.StructuredQuery;
 import org.lemurproject.galago.utility.Parameters;
 
 
-import static org.lemurproject.galago.tupleflow.Parameters.*;
+import static org.lemurproject.galago.utility.Parameters.*;
 
 /**
  * Created by mhjang on 1/30/15.
@@ -39,7 +39,7 @@ public class WikiRetrieval {
 
             Parameters p = Parameters.instance();
             p.set("startAt", 0);
-            p.set("requested", 30);
+            p.set("requested", 20);
             p.set("metrics", "map");
             List<ScoredDocument> results = null;
 
@@ -48,7 +48,7 @@ public class WikiRetrieval {
             results = retrieval.executeQuery(transformed, p).scoredDocuments; // issue the query!
 
             for(ScoredDocument sd:results){ // print results
-     //           System.out.println(sd.rank+" "+sd.documentName+ " ("+sd.score+")");
+         //       System.out.println(sd.rank+" "+sd.documentName+ " ("+sd.score+")");
                 Document document = retrieval.getDocument(sd.documentName, new Document.DocumentComponents(true, true, true));
 
 

@@ -18,7 +18,7 @@ public class StopWordRemover {
 
     public StopWordRemover() {
         try{
-            SimpleFileReader sr =new SimpleFileReader("/Users/mhjang/Documents/workspace/WikiLinking/stopwords.txt");
+            SimpleFileReader sr =new SimpleFileReader("stopwords.txt");
         //    File stopWordsFile = new File( this.getClass().getResource("./resources/stopwords.txt").toURI());
             stopwords = new HashSet<String>();
             while(sr.hasMoreLines()) {

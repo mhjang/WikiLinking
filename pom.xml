@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>RankWiki</groupId>
     <artifactId>RankRelevantWikiPages</artifactId>
@@ -6,7 +7,7 @@
     <packaging>pom</packaging>
 
     <properties>
-    <galago.version>3.7</galago.version>
+    <galago.version>3.7-SNAPSHOT</galago.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <javaVersion>1.7</javaVersion>
     <mainClass>edu.umass.ciir.hack.App</mainClass>
@@ -28,27 +29,9 @@
     </repositories>
     <dependencies>
         <dependency>
-            <groupId>org.lemurproject.galago</groupId>
-         <artifactId>core</artifactId>
-         <version>${galago.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>net.sf.trove4j</groupId>
             <artifactId>trove4j</artifactId>
             <version>3.0.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>cc.mallet</groupId>
-            <artifactId>mallet</artifactId>
-            <version>2.0.7</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.lemurproject.galago</groupId>
-            <artifactId>tupleflow</artifactId>
-            <version>${galago.version}</version>
         </dependency>
 
         <dependency>
@@ -60,29 +43,6 @@
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
             <version>1.7.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>edu.umass.cs</groupId>
-            <artifactId>surveyman</artifactId>
-            <version>1.6</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.opennlp</groupId>
-            <artifactId>opennlp-maxent</artifactId>
-            <version>3.0.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.bwaldvogel</groupId>
-            <artifactId>liblinear</artifactId>
-            <version>1.94</version>
-        </dependency>
-        <dependency>
-            <groupId>com.clearnlp</groupId>
-            <artifactId>clearnlp</artifactId>
-            <version>2.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tika</groupId>

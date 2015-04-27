@@ -8,7 +8,6 @@ import org.lemurproject.galago.core.retrieval.prf.RelevanceModel1;
 import org.lemurproject.galago.core.retrieval.query.Node;
 import org.lemurproject.galago.core.retrieval.query.StructuredQuery;
 import org.lemurproject.galago.utility.Parameters;
-import sun.org.mozilla.javascript.internal.Evaluator;
 
 import java.io.*;
 import java.util.LinkedList;
