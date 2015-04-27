@@ -52,16 +52,14 @@ public class DocumentQueryGenerator {
 
     public static void main(String[] args) {
         //   generateDropDownMenu();
-
-        String dir = "C://Users/mhjang/Research/WikiLinking/clueweb_plaintext_tiled/";
-
+        String dir = "C://Users/mhjang/Research/WikiLinking/tiled_bprm/";
         // a list of clueweb documents that are judged
         LinkedList<String> cluewebJudged = new LinkedList<String>();
 
         try {
             DBConnector db = new DBConnector("jdbc:mysql://localhost/", "wikilinking");
             ResultSet rs = db.getQueryResult("select distinct clueweb_id from rating group by clueweb_id, wiki_title");
-            while(rs.next())
+            while (rs.next())
                 cluewebJudged.add(rs.getString("clueweb_id"));
 
         } catch (Exception e) {
@@ -77,16 +75,15 @@ public class DocumentQueryGenerator {
 
         HashMap<String, String> manualQuery = new HashMap<String, String>();
 
-
         int k = 10; // # of query words
         int topK = 20;
         double avgFraction = 0.0;
 
         // read manual query
-      /*  try {
-            SimpleFileReader sr2 = new SimpleFileReader("/Users/mhjang/Desktop/manual_query.txt");
+        try {
+            SimpleFileReader sr2 = new SimpleFileReader("manual_query.txt");
             String line;
-            while(sr2.hasMoreLines()) {
+            while (sr2.hasMoreLines()) {
                 line = sr2.readLine();
                 String[] tokens = line.split("\t");
                 String cluewebId = tokens[0];
@@ -97,133 +94,127 @@ public class DocumentQueryGenerator {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        */
 
 
-            int tileNumSum = 0;
-            int documentJudgedNum = 0;
-            try {
-                SimpleFileWriter tiled = new SimpleFileWriter("tiled_query_ranking.txt");
-                SimpleFileWriter original = new SimpleFileWriter("original_query_ranking.txt");
-                SimpleFileWriter tileNumWriter = new SimpleFileWriter("documents_tile_num.txt");
-                //   SimpleFileWriter manual = new SimpleFileWriter("manual_query_ranking.txt");
-                for (String filename : dr.getFileNameList()) {
+        int tileNumSum = 0;
+        int documentJudgedNum = 0;
+        try {
+            SimpleFileWriter tiled = new SimpleFileWriter("tiled_query_ranking.txt");
+            SimpleFileWriter original = new SimpleFileWriter("original_query_ranking.txt");
+            SimpleFileWriter tileNumWriter = new SimpleFileWriter("documents_tile_num.txt");
+            SimpleFileWriter manual = new SimpleFileWriter("manual_query_ranking.txt");
+            for (String filename : dr.getFileNameList()) {
 
-                    // sometimes there is an error, you don't want to start the whole generation over.
-                    // If the annotation file exists, it skips.
-                    // If there is any change in polling, you need to clear up the annotation directory, otherwise it'll skip everything.
+                // sometimes there is an error, you don't want to start the whole generation over.
+                // If the annotation file exists, it skips.
+                // If there is any change in polling, you need to clear up the annotation directory, otherwise it'll skip everything.
 
-                /*if (dr2.getFileNameList().contains(filename + ".html")) {
-                    System.out.println("skipping " + filename);
-                    continue;
-                }
-                */
-
-                    if(!cluewebJudged.contains(filename.replace(".html", ""))) continue;
-                    Multiset<String> weightedDocs = HashMultiset.create();
-                    SimpleFileReader sr = new SimpleFileReader(dir + filename);
-                    StringBuilder tileBuilder = new StringBuilder();
-                    StringBuilder fullTextBulider = new StringBuilder();
-                    HashSet<String> rankedSet = new HashSet<String>();
-
-                    boolean tileOpened = false;
-                    System.out.println("******************* " + filename + " *****************");
-
-                    int numOfTiles = 0;
-                    while (sr.hasMoreLines()) {
-                        String line = sr.readLine();
-                        if (!tileOpened && line.contains("<TILE>")) {
-                            tileOpened = true;
-                            tileBuilder.append(line.replace("<TILE>", ""));
-                            numOfTiles++;
-                        } else if (line.contains("</TILE>")) {
-                            tileOpened = false;
-                            tileBuilder.append(line.replace("</TILE>", ""));
-                            //       System.out.println("TILE: " + tileBuilder.toString());
-                            List<ScoredDocument> docs = (List<ScoredDocument>) wr.runQuery(queryGen.generateQuerybyFrequency(tileBuilder.toString(), k));
-                            int rankWeight = topK;
-                            for (ScoredDocument sd : docs) {
-                                weightedDocs.add(sd.documentName, rankWeight--);
-                            }
-                            fullTextBulider.append(tileBuilder.toString());
-                            tileBuilder = new StringBuilder();
-                            //
-                        } else if (tileOpened) {
-                            tileBuilder.append(line);
+                 /*if (dr2.getFileNameList().contains(filename + ".html")) {
+                        System.out.println("skipping " + filename);
+                        continue;
                         }
-                    }
+                    */
 
-                    tileNumWriter.writeLine(filename + "\t" + numOfTiles);
-                    tileNumSum += numOfTiles;
-                    documentJudgedNum++;
+                if (!cluewebJudged.contains(filename.replace(".html", ""))) continue;
+                if (!manualQuery.containsKey(filename)) continue;
 
+                Multiset<String> weightedDocs = HashMultiset.create();
+                SimpleFileReader sr = new SimpleFileReader(dir + filename);
+                StringBuilder tileBuilder = new StringBuilder();
+                StringBuilder fullTextBulider = new StringBuilder();
+                HashSet<String> rankedSet = new HashSet<String>();
 
-                    int rank = 1;
+                boolean tileOpened = false;
+                System.out.println("******************* " + filename + " *****************");
 
-                    System.out.println("Original Rank");
-                    List<ScoredDocument> docs = (List<ScoredDocument>) wr.runQuery(queryGen.generateQuerybyFrequency(fullTextBulider.toString(), k));
-
-                    for (ScoredDocument sd : docs) {
-                        if (rank == topK) break;
-                        String documentName = sd.documentName.replaceAll(".html", "");
-                        original.writeLine(filename + "\t 0 \t" + documentName + "\t 0 \t" + sd.rank + "\t" + sd.score + "\t" + "original");
-                        rank++;
-                    }
-
-                    System.out.println("Tiled Rank");
-                    ImmutableMultiset<String> entryList = Multisets.copyHighestCountFirst(weightedDocs);
-                    HashSet<String> topKDocsInTile = new HashSet<String>();
-
-                    rank = 1;
-                    for (Multiset.Entry<String> e : entryList.entrySet()) {
-                        String documentName = e.getElement().replaceAll(".html", "");
-                        tiled.writeLine(filename + "\t 0 \t" + documentName + "\t" + rank + "\t" + e.getCount() + "\t" + "manual");
-
-                        topKDocsInTile.add(e.getElement());
-                        if (rank == topK) break;
-                        rankedSet.add(e.getElement());
-                        rank++;
-                    }
-
-
-             /*   System.out.println("Manual Query");
-
-                filename = filename.replace(".html", "");
-                if (manualQuery.containsKey(filename)) {
-                    List<ScoredDocument> docs2 = (List<ScoredDocument>) wr.runQuery(manualQuery.get(filename));
-                    for (ScoredDocument sd : docs2) {
-                        System.out.println(rank++ + ": " + sd.documentName);
-                        manual.writeLine(filename + "\t 0 \t" + sd.documentName + "\t" + sd.rank + "\t" + sd.score + "\t" + "manual");
-                        rankedSet.add(sd.documentName);
+                int numOfTiles = 0;
+                while (sr.hasMoreLines()) {
+                    String line = sr.readLine();
+                    if (!tileOpened && line.contains("<TILE>")) {
+                        tileOpened = true;
+                        tileBuilder.append(line.replace("<TILE>", ""));
+                        numOfTiles++;
+                    } else if (line.contains("</TILE>")) {
+                        tileOpened = false;
+                        tileBuilder.append(line.replace("</TILE>", ""));
+                        //       System.out.println("TILE: " + tileBuilder.toString());
+                        List<ScoredDocument> docs = (List<ScoredDocument>) wr.runQuery(queryGen.generateQuerybyFrequency(tileBuilder.toString(), k));
+                        int rankWeight = topK;
+                        for (ScoredDocument sd : docs) {
+                            weightedDocs.add(sd.documentName, rankWeight--);
+                        }
+                        fullTextBulider.append(tileBuilder.toString());
+                        tileBuilder = new StringBuilder();
+                        //
+                    } else if (tileOpened) {
+                        tileBuilder.append(line);
                     }
                 }
 
+                tileNumWriter.writeLine(filename + "\t" + numOfTiles);
+                tileNumSum += numOfTiles;
+                documentJudgedNum++;
 
-                int intersection = 0;
-                rank = 0;
+
+                int rank = 1;
+
+                System.out.println("Original Rank");
+                List<ScoredDocument> docs = (List<ScoredDocument>) wr.runQuery(queryGen.generateQuerybyFrequency(fullTextBulider.toString(), k));
+
                 for (ScoredDocument sd : docs) {
-                    System.out.println(rank++ + ": " + sd.documentName);
-                    if (topKDocsInTile.contains(sd.documentName)) intersection++;
-                    rankedSet.add(sd.documentName);
-                }
-                double fraction = (double) (intersection) / (double) (k);
-                avgFraction += fraction;
-                System.out.println("list fraction: " + fraction);
-
-
-                gen.generateAnnotationPage(filename, rankedSet);
-                */
-
+                    String documentName = sd.documentName.replaceAll(".html", "");
+                    original.writeLine(filename + "\t 0 \t" + documentName + "\t 0 \t" + sd.rank + "\t" + sd.score + "\t" + "original");
+                    if (rank == topK) break;
+                    rank++;
                 }
 
-                //     manual.close();
-                tiled.close();
-                original.close();
-                tileNumWriter.close();
+                System.out.println("Tiled Rank");
+                ImmutableMultiset<String> entryList = Multisets.copyHighestCountFirst(weightedDocs);
+                HashSet<String> topKDocsInTile = new HashSet<String>();
 
-        } catch (IOException e) {
+                rank = 1;
+                for (Multiset.Entry<String> e : entryList.entrySet()) {
+                    String documentName = e.getElement().replaceAll(".html", "");
+                    tiled.writeLine(filename + "\t 0 \t" + documentName + "\t" + rank + "\t" + e.getCount() + "\t" + "manual");
+            //        topKDocsInTile.add(e.getElement());
+                    if (rank == topK) break;
+                    rankedSet.add(e.getElement());
+                    rank++;
+                }
+
+
+                System.out.println("Manual Query");
+                rank = 1;
+                List<ScoredDocument> docs2 = (List<ScoredDocument>) wr.runQuery(manualQuery.get(filename));
+                for (ScoredDocument sd : docs2) {
+  //                  System.out.println(rank++ + ": " + sd.documentName);
+                    manual.writeLine(filename + "\t 0 \t" + sd.documentName + "\t" + sd.rank + "\t" + sd.score + "\t" + "manual");
+                    if (rank == topK) break;
+                    rank++;
+            //        rankedSet.add(sd.documentName);
+                }
+            }
+            /*
+            int intersection = 0;
+            int rank = 1;
+            for (ScoredDocument sd : docs) {
+                System.out.println(rank++ + ": " + sd.documentName);
+                if (topKDocsInTile.contains(sd.documentName)) intersection++;
+                rankedSet.add(sd.documentName);
+            }
+            double fraction = (double) (intersection) / (double) (k);
+            avgFraction += fraction;
+            System.out.println("list fraction: " + fraction);
+            */
+            manual.close();
+            tiled.close();
+            original.close();
+            tileNumWriter.close();
+
+        }catch(Exception e) {
             e.printStackTrace();
         }
+        //   gen.generateAnnotationPage(filename, rankedSet);
 
         System.out.println("# of documents queried: " + documentJudgedNum + "\t");
         System.out.println("# of document tiles: " + (double)tileNumSum/(double)documentJudgedNum);

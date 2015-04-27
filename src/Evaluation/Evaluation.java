@@ -22,7 +22,7 @@ public class Evaluation {
     }
 
     public static void main(String[] args) {
-  //      loadCollectedJudgments();
+     //   loadCollectedJudgments();
         try {
             queryEval();
         } catch (IOException e) {
@@ -37,14 +37,18 @@ public class Evaluation {
     private static void loadCollectedJudgments() {
         try {
             DBConnector db = new DBConnector("jdbc:mysql://localhost/", "wikilinking");
-            SimpleFileWriter sw = new SimpleFileWriter("wiki.qrel");
+            SimpleFileWriter sw = new SimpleFileWriter("wiki2.qrel");
             ResultSet rs = db.getQueryResult("select *, avg(rating) r from rating group by clueweb_id, wiki_title");
             while (rs.next()) {
                 String cluewebId = rs.getString("clueweb_id");
                 String wikiTitle = rs.getString("wiki_title");
                 int rating = Math.round((float) rs.getDouble("r"));
-                if(rating > 0)
-                    rating = 4 - rating + 1;
+                if(rating ==1)
+                    rating = 2;
+                else if(rating==2)
+                    rating = 1;
+                else
+                    rating = 0;
                 System.out.println(cluewebId + "\t 0 \t" + wikiTitle.replace(" ", "_") + "\t" + rating);
                 sw.writeLine(cluewebId + "\t 0 \t" + wikiTitle.replace(" ", "_") + "\t" + rating);
             }
@@ -56,12 +60,12 @@ public class Evaluation {
 
 
     public static void queryEval() throws IOException {
-        QuerySetJudgments qset = new QuerySetJudgments("wiki.qrel", false, true);
+        QuerySetJudgments qset = new QuerySetJudgments("wiki2.qrel", false, true);
         Parameters p = new Parameters();
         ///Users/mhjang/Downloads/
         //      p.set("baseline", "./robust.community.desc.mhjang.tr100.txt");
         //      p.set("baseline", "/Users/mhjang/Downloads/books.title.mhjang.tr100.txt");
-        p.set("baseline", "tiled_query_ranking.txt");
+        p.set("baseline", "original_query_ranking.txt");
      //   p.set("tile", "tiled_query_ranking.txt");
 
         //      p.set("baseline", "/Users/mhjang/Documents/teaching_documents/extracted/dataset/applydataset/experiments/c2/noise_output");

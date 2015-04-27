@@ -1,14 +1,13 @@
 package Tokenizer;
 
 import myungha.SimpleFileReader;
-import org.lemurproject.galago.core.retrieval.ScoredDocument;
 import simple.io.myungha.DirectoryReader;
 import simple.io.myungha.SimpleFileWriter;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Created by mhjang on 4/26/2015.
@@ -26,18 +25,28 @@ public class DocumentTiler {
             // (documentName, LinkedList: document lines)
             documents = new HashMap<String, LinkedList<String>>();
             for (String filename : dr.getFileNameList()) {
-                filename = filename.replaceAll(".html", "");
                 SimpleFileReader sr = new SimpleFileReader(dir + filename);
                 LinkedList<String> lines = new LinkedList<String>();
                 while (sr.hasMoreLines()) {
                     lines.add(sr.readLine());
                 }
+                filename = filename.replaceAll(".html", "");
                 documents.put(filename, lines);
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void main(String[] args) {
+        String dir = "C://Users/mhjang/Research/WikiLinking/clueweb_plaintext/";
+        String dirToTile = "C://Users/mhjang/Research/WikiLinking/clueweb_plaintext_tiled/";
+        String baseDir = "C://Users/mhjang/Research/WikiLinking/";
+        DocumentTiler dt = new DocumentTiler(dir);
+        dt.clinchTile(dirToTile, baseDir + "clueweb_plaintext_clinch/");
+        dt.tileAllFixedNum(baseDir + "clueweb_plaintext_tilesize5/", 5);
+        dt.tileAllFixedSize(baseDir + "clueweb_plaintext_tilenum5/", 5);
     }
 
     /**
@@ -50,11 +59,14 @@ public class DocumentTiler {
      */
     public void clinchTile(String dirToTiled, String outputDir) {
         try {
+            File directory = new File(outputDir);
+            if(!directory.exists())
+                directory.mkdirs();
+
             DirectoryReader dr = new DirectoryReader(dirToTiled);
             System.out.println("clinching tiles");
             SimpleFileWriter sw = new SimpleFileWriter("clinch_tile_comp.txt");
             for (String filename : dr.getFileNameList()) {
-                filename = filename.replaceAll(".html", "");
                 SimpleFileReader sr = new SimpleFileReader(dirToTiled + filename);
                 boolean tileOpened = false;
                 int numOfTiles = 0;
@@ -72,7 +84,9 @@ public class DocumentTiler {
                         tileSize++;
                     }
                 }
-                int fixedTileSize = tileFixedCount(outputDir, filename, numOfTiles);
+                filename = filename.replaceAll(".html", "");
+
+                int fixedTileSize = tileFixedNum(outputDir, filename, numOfTiles);
                 int misMatch = 0;
                 for (Integer i : eachTileSize) {
                     misMatch += Math.abs(fixedTileSize - i);
@@ -95,7 +109,7 @@ public class DocumentTiler {
      * @param numOfTiles
      * @return
      */
-    private int  tileFixedCount(String outputDir, String filename, int numOfTiles) {
+    private int tileFixedNum(String outputDir, String filename, int numOfTiles) {
         int tileSize = 0;
         try {
             SimpleFileWriter sw = new SimpleFileWriter(outputDir + filename);
@@ -103,6 +117,8 @@ public class DocumentTiler {
             int documentSize = lines.size();
             tileSize = (int) ((double) documentSize / (double) numOfTiles);
             boolean tileOpened = false;
+            if(tileSize==0)
+                System.out.println("Tile size zero error!:" + filename + "\t" + documentSize + ", " + numOfTiles);
             for (int i = 0; i < documentSize; i++) {
                 if (i % tileSize == 0) {
                     sw.writeLine("<TILE>");
@@ -133,8 +149,11 @@ public class DocumentTiler {
      * @param k
      */
     public void tileAllFixedNum(String outputDir, int k) {
+        File directory = new File(outputDir);
+        if(!directory.exists())
+            directory.mkdirs();
         for(String filename : documents.keySet()) {
-            tileFixedCount(outputDir, filename, k);
+            tileFixedNum(outputDir, filename, k);
         }
     }
 
@@ -165,8 +184,13 @@ public class DocumentTiler {
     /**
      * outputs files with the fixed size of tiles
      */
-    public void tileAllFixedSize(int aTileSize) {
-
+    public void tileAllFixedSize(String outputDir, int aTileSize) {
+        File directory = new File(outputDir);
+        if(!directory.exists())
+            directory.mkdirs();
+        for(String filename : documents.keySet()) {
+            tileFixedSize(outputDir, filename, aTileSize);
+        }
     }
 
 }

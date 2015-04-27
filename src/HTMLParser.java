@@ -38,8 +38,8 @@ public class HTMLParser  {
         HTMLParser parser = new HTMLParser();
         try {
       //      SimpleFileReader sr = new SimpleFileReader("/Users/mhjang/Desktop/Research/WikiLinking/data/clueweb_pages/clueweb09-en0002-60-24173.html");
-            String inDir = "/Users/mhjang/Desktop/Research/WikiLinking/data/clueweb_pages/";
-            String outDir = "/Users/mhjang/Desktop/Research/WikiLinking/data/clueweb_plaintext/";
+            String inDir = "C:/Users/mhjang/Research/WikiLinking/clueweb_pages/";
+            String outDir = "C:/Users/mhjang/Research/WikiLinking/clueweb_plaintext2/";
             DirectoryReader dr = new DirectoryReader(inDir);
 
             for(String file : dr.getFileNameList()) {
@@ -50,7 +50,19 @@ public class HTMLParser  {
 
                 }
                 SimpleFileWriter sw = new SimpleFileWriter(outDir + file);
-                sw.writeLine(parser.getPlainString(builder.toString()));
+                String line = parser.getPlainString(builder.toString());
+                line = line.replaceAll("[ ]{3,}", "\n");
+                line = line.replaceAll("\t", "\n");
+                line = line.replaceAll("&nbsp", " ");
+                line = line.replaceAll("&amp;", "&");
+                line = line.replaceAll("&quot", "\"");
+                String[] lines = line.split("\n");
+                for(String l : lines) {
+                    if(!l.isEmpty())
+                        sw.writeLine(l);
+                }
+
+         //       sw.writeLine(parser.getPlainString(builder.toString()));
            //     System.out.println(builder.toString());
              //
            //     parser.splitDocument(builder.toString());

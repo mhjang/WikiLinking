@@ -6,10 +6,8 @@ import org.lemurproject.galago.core.retrieval.RetrievalFactory;
 import org.lemurproject.galago.core.retrieval.ScoredDocument;
 import org.lemurproject.galago.core.retrieval.query.Node;
 import org.lemurproject.galago.core.retrieval.query.StructuredQuery;
-import org.lemurproject.galago.utility.Parameters;
+import org.lemurproject.galago.tupleflow.Parameters;
 
-
-import static org.lemurproject.galago.utility.Parameters.*;
 
 /**
  * Created by mhjang on 1/30/15.
@@ -37,7 +35,7 @@ public class WikiRetrieval {
             Parameters globalParams = Parameters.parseFile(jsonConfigFile);
             Retrieval retrieval= RetrievalFactory.instance(globalParams);
 
-            Parameters p = Parameters.instance();
+            Parameters p = new Parameters();
             p.set("startAt", 0);
             p.set("requested", 20);
             p.set("metrics", "map");
