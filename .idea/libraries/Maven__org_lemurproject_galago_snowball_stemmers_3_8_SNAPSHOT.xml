@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.lemurproject.galago:snowball-stemmers:3.8-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/lemurproject/galago/snowball-stemmers/3.8-SNAPSHOT/snowball-stemmers-3.8-20150426.211547-9.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/lemurproject/galago/snowball-stemmers/3.8-SNAPSHOT/snowball-stemmers-3.8-20150426.211547-9-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/lemurproject/galago/snowball-stemmers/3.8-SNAPSHOT/snowball-stemmers-3.8-20150426.211547-9-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -28,6 +28,22 @@ public class DocumentQueryGenerator {
     StopWordRemover sr = new StopWordRemover();
 
 
+    static class Tile {
+        String text;
+        static StopWordRemover sr;
+        double stopwordContainment = 0.0;
+        public Tile (String t) {
+            text = t;
+            String[] tokens = text.split(" ");
+            String[] newTokens = sr.removeStopWords(tokens);
+            if(tokens.length > 0)
+                stopwordContainment = (double)(tokens.length - newTokens.length)/(double)tokens.length;
+            else
+                stopwordContainment = 0.0;
+        }
+    }
+
+
     public static void generateDropDownMenu() {
         String dir = "/Users/mhjang/Desktop/Research/WikiLinking/data/clueweb_plaintext/tiled/";
         DirectoryReader dr = new DirectoryReader(dir);
@@ -69,6 +85,7 @@ public class DocumentQueryGenerator {
 
         DirectoryReader dr = new DirectoryReader(dir);
         DocumentQueryGenerator queryGen = new DocumentQueryGenerator();
+        Tile.sr = queryGen.sr;
         WikiRetrieval wr = new WikiRetrieval();
         //    GenAnnotation gen = new GenAnnotation(annotationDir);
         //    DirectoryReader dr2 = new DirectoryReader(annotationDir);
@@ -102,7 +119,7 @@ public class DocumentQueryGenerator {
             SimpleFileWriter tiled = new SimpleFileWriter("tiled_query_ranking.txt");
             SimpleFileWriter original = new SimpleFileWriter("original_query_ranking.txt");
             SimpleFileWriter tileNumWriter = new SimpleFileWriter("documents_tile_num.txt");
-            SimpleFileWriter manual = new SimpleFileWriter("manual_query_ranking.txt");
+    //        SimpleFileWriter manual = new SimpleFileWriter("manual_query_ranking.txt");
             for (String filename : dr.getFileNameList()) {
 
                 // sometimes there is an error, you don't want to start the whole generation over.
@@ -116,7 +133,7 @@ public class DocumentQueryGenerator {
                     */
 
                 if (!cluewebJudged.contains(filename.replace(".html", ""))) continue;
-                if (!manualQuery.containsKey(filename)) continue;
+            //    if (!manualQuery.containsKey(filename)) continue;
 
                 Multiset<String> weightedDocs = HashMultiset.create();
                 SimpleFileReader sr = new SimpleFileReader(dir + filename);
@@ -128,6 +145,7 @@ public class DocumentQueryGenerator {
                 System.out.println("******************* " + filename + " *****************");
 
                 int numOfTiles = 0;
+
                 while (sr.hasMoreLines()) {
                     String line = sr.readLine();
                     if (!tileOpened && line.contains("<TILE>")) {
@@ -137,12 +155,13 @@ public class DocumentQueryGenerator {
                     } else if (line.contains("</TILE>")) {
                         tileOpened = false;
                         tileBuilder.append(line.replace("</TILE>", ""));
+                        Tile t = new Tile(tileBuilder.toString());
                         //       System.out.println("TILE: " + tileBuilder.toString());
-                        List<ScoredDocument> docs = (List<ScoredDocument>) wr.runQuery(queryGen.generateQuerybyFrequency(tileBuilder.toString(), k));
-                        int rankWeight = topK;
-                        for (ScoredDocument sd : docs) {
-                            weightedDocs.add(sd.documentName, rankWeight--);
-                        }
+                    //    List<ScoredDocument> docs = (List<ScoredDocument>) wr.runQuery(queryGen.generateQuerybyFrequency(tileBuilder.toString(), k));
+                   //     int rankWeight = topK;
+                   //     for (ScoredDocument sd : docs) {
+                    //        weightedDocs.add(sd.documentName, rankWeight--);
+                   //     }
                         fullTextBulider.append(tileBuilder.toString());
                         tileBuilder = new StringBuilder();
                         //
@@ -151,6 +170,7 @@ public class DocumentQueryGenerator {
                     }
                 }
 
+                if(numOfTiles == 1) continue;
                 tileNumWriter.writeLine(filename + "\t" + numOfTiles);
                 tileNumSum += numOfTiles;
                 documentJudgedNum++;
@@ -163,7 +183,7 @@ public class DocumentQueryGenerator {
 
                 for (ScoredDocument sd : docs) {
                     String documentName = sd.documentName.replaceAll(".html", "");
-                    original.writeLine(filename + "\t 0 \t" + documentName + "\t 0 \t" + sd.rank + "\t" + sd.score + "\t" + "original");
+                    original.writeLine(filename + "\t 0 \t" + documentName + "\t" + sd.rank + "\t" + sd.score + "\t" + "original");
                     if (rank == topK) break;
                     rank++;
                 }
@@ -182,18 +202,20 @@ public class DocumentQueryGenerator {
                     rank++;
                 }
 
-
+                /*
                 System.out.println("Manual Query");
                 rank = 1;
                 List<ScoredDocument> docs2 = (List<ScoredDocument>) wr.runQuery(manualQuery.get(filename));
                 for (ScoredDocument sd : docs2) {
   //                  System.out.println(rank++ + ": " + sd.documentName);
-                    manual.writeLine(filename + "\t 0 \t" + sd.documentName + "\t" + sd.rank + "\t" + sd.score + "\t" + "manual");
+                    manual.writeLine(filename.replace(".html","") + "\t 0 \t" + sd.documentName + "\t" + sd.rank + "\t" + sd.score + "\t" + "manual");
                     if (rank == topK) break;
                     rank++;
             //        rankedSet.add(sd.documentName);
                 }
+                */
             }
+
             /*
             int intersection = 0;
             int rank = 1;
@@ -206,7 +228,7 @@ public class DocumentQueryGenerator {
             avgFraction += fraction;
             System.out.println("list fraction: " + fraction);
             */
-            manual.close();
+       //     manual.close();
             tiled.close();
             original.close();
             tileNumWriter.close();

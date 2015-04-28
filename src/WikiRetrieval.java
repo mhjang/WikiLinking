@@ -27,7 +27,8 @@ public class WikiRetrieval {
     public List<ScoredDocument> runQuery(String query) {
         try {
             String jsonConfigFile = "search.params";
-            query = query.replace("#","");
+            query = query.replaceAll("#","");
+            query = query.replaceAll("\"","");
 
             System.out.println("query: " + query);
             TagTokenizer tt = new TagTokenizer();

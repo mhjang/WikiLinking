@@ -65,7 +65,7 @@ public class Evaluation {
         ///Users/mhjang/Downloads/
         //      p.set("baseline", "./robust.community.desc.mhjang.tr100.txt");
         //      p.set("baseline", "/Users/mhjang/Downloads/books.title.mhjang.tr100.txt");
-        p.set("baseline", "original_query_ranking.txt");
+        p.set("baseline", "manual_query_ranking.txt");
      //   p.set("tile", "tiled_query_ranking.txt");
 
         //      p.set("baseline", "/Users/mhjang/Documents/teaching_documents/extracted/dataset/applydataset/experiments/c2/noise_output");

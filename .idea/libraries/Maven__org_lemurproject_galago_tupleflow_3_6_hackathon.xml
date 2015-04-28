@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.lemurproject.galago:tupleflow:3.6-hackathon">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/lemurproject/galago/tupleflow/3.6-hackathon/tupleflow-3.6-hackathon.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/lemurproject/galago/tupleflow/3.6-hackathon/tupleflow-3.6-hackathon-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/lemurproject/galago/tupleflow/3.6-hackathon/tupleflow-3.6-hackathon-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

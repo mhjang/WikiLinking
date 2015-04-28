@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.lemurproject.galago:utility:3.7-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/lemurproject/galago/utility/3.7-SNAPSHOT/utility-3.7-20141018.050827-14.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/lemurproject/galago/utility/3.7-SNAPSHOT/utility-3.7-20141018.050827-14-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/lemurproject/galago/utility/3.7-SNAPSHOT/utility-3.7-20141018.050827-14-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
