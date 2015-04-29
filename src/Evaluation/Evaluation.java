@@ -1,6 +1,7 @@
 package Evaluation;
 
 import db.DBConnector;
+import myungha.SimpleFileReader;
 import myungha.SimpleFileWriter;
 import org.lemurproject.galago.core.eval.*;
 import org.lemurproject.galago.tupleflow.Parameters;
@@ -11,6 +12,7 @@ import java.io.PrintStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by mhjang on 3/26/15.
@@ -24,7 +26,8 @@ public class Evaluation {
     public static void main(String[] args) {
      //   loadCollectedJudgments();
         try {
-            queryEval();
+    //        queryEval();
+            countJudgedItems();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -60,7 +63,8 @@ public class Evaluation {
 
 
     public static void queryEval() throws IOException {
-        QuerySetJudgments qset = new QuerySetJudgments("wiki2.qrel", false, true);
+        QuerySetJudgments qset = new QuerySetJudgments("wiki.qrel_", false, true);
+
         Parameters p = new Parameters();
         ///Users/mhjang/Downloads/
         //      p.set("baseline", "./robust.community.desc.mhjang.tr100.txt");
@@ -77,5 +81,42 @@ public class Evaluation {
         //   evaluator.comparisonEvaluation(p, qset, ps);
         evaluator.singleEvaluation(p, qset, ps);
     }
+
+
+
+    public static void countJudgedItems() throws IOException {
+        // how many relevant articles are there for each query?
+        QuerySetJudgments qset = new QuerySetJudgments("wiki.qrel_", false, true);
+        HashMap<String, String> manualQuery = new HashMap<String, String>();
+        try {
+            SimpleFileReader sr2 = new SimpleFileReader("manual_query.txt");
+            String line;
+            int qsSizeSum = 0;
+            int numOfQueries = 0;
+            while (sr2.hasMoreLines()) {
+                line = sr2.readLine();
+                String[] tokens = line.split("\t");
+                String cluewebId = tokens[0];
+                String query = tokens[1];
+                System.out.println(cluewebId + ":" + query);
+                manualQuery.put(cluewebId, query);
+                if(!qset.containsKey(cluewebId)) continue;
+                QueryJudgments qs = qset.get(cluewebId);
+                qsSizeSum += qs.size();
+                numOfQueries++;
+
+            }
+            System.out.println("manual query set: " + (double)qsSizeSum / (double)numOfQueries);
+            qsSizeSum = 0;
+            for(String query : qset.keySet()) {
+                QueryJudgments qs = qset.get(query);
+                qsSizeSum += qs.size();
+            }
+            System.out.println("entire query set: " + (double)qsSizeSum / (double)qset.size());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }
