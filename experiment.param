@@ -1,0 +1,12 @@
+{
+"dataset":"all",
+"experiment":{"tiled": {
+                        "weighted":false,
+                        "tf_tile":false,
+                        "tf_include":0,
+                        },  
+
+    ,"tf"},
+"tiled":["weighted", "tf_tile", "tf_include"],
+"querysize":10,
+}

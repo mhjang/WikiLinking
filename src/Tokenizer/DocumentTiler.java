@@ -1,6 +1,6 @@
 package Tokenizer;
 
-import myungha.SimpleFileReader;
+import myungha.utils.SimpleFileReader;
 import simple.io.myungha.DirectoryReader;
 import simple.io.myungha.SimpleFileWriter;
 
@@ -40,8 +40,8 @@ public class DocumentTiler {
     }
 
     public static void main(String[] args) {
-        String dir = "C://Users/mhjang/Research/WikiLinking/clueweb_plaintext/";
-        String dirToTile = "C://Users/mhjang/Research/WikiLinking/clueweb_plaintext_tiled/";
+        String dir = "C://Users/mhjang/Research/WikiLinking/clueweb_bprm/";
+        String dirToTile = "C://Users/mhjang/Research/WikiLinking/tiled_bprm/";
         String baseDir = "C://Users/mhjang/Research/WikiLinking/";
         DocumentTiler dt = new DocumentTiler(dir);
         dt.clinchTile(dirToTile, baseDir + "clueweb_plaintext_clinch/");
@@ -112,13 +112,21 @@ public class DocumentTiler {
     private int tileFixedNum(String outputDir, String filename, int numOfTiles) {
         int tileSize = 0;
         try {
-            SimpleFileWriter sw = new SimpleFileWriter(outputDir + filename);
             LinkedList<String> lines = documents.get(filename);
             int documentSize = lines.size();
+            if(documentSize == 0) return 0;
+            SimpleFileWriter sw = new SimpleFileWriter(outputDir + filename);
             tileSize = (int) ((double) documentSize / (double) numOfTiles);
             boolean tileOpened = false;
-            if(tileSize==0)
+            if(tileSize==0) {
                 System.out.println("Tile size zero error!:" + filename + "\t" + documentSize + ", " + numOfTiles);
+                sw.writeLine("<TILE>");
+                for (String l : lines) {
+                    sw.writeLine(l);
+                }
+                sw.writeLine("</TILE>");
+                return 1;
+            }
             for (int i = 0; i < documentSize; i++) {
                 if (i % tileSize == 0) {
                     sw.writeLine("<TILE>");

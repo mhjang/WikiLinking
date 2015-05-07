@@ -3,8 +3,8 @@ import Tokenizer.Stemmer;
 import Tokenizer.StopWordRemover;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
-import myungha.DirectoryReader;
-import myungha.SimpleFileWriter;
+import myungha.utils.DirectoryReader;
+import myungha.utils.SimpleFileWriter;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,6 +1,6 @@
-import myungha.DirectoryReader;
-import myungha.SimpleFileReader;
-import myungha.SimpleFileWriter;
+import myungha.utils.DirectoryReader;
+import myungha.utils.SimpleFileReader;
+import myungha.utils.SimpleFileWriter;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.safety.Whitelist;
@@ -35,6 +35,7 @@ public class HTMLParser  {
     }
 
     public static void main(String[] args) {
+
         HTMLParser parser = new HTMLParser();
         try {
       //      SimpleFileReader sr = new SimpleFileReader("/Users/mhjang/Desktop/Research/WikiLinking/data/clueweb_pages/clueweb09-en0002-60-24173.html");
