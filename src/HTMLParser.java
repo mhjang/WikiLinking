@@ -1,4 +1,4 @@
-import myungha.utils.DirectoryReader;
+import myungha.utils.DirectoryManager;
 import myungha.utils.SimpleFileReader;
 import myungha.utils.SimpleFileWriter;
 import org.jsoup.Jsoup;
@@ -41,7 +41,7 @@ public class HTMLParser  {
       //      SimpleFileReader sr = new SimpleFileReader("/Users/mhjang/Desktop/Research/WikiLinking/data/clueweb_pages/clueweb09-en0002-60-24173.html");
             String inDir = "C:/Users/mhjang/Research/WikiLinking/clueweb_pages/";
             String outDir = "C:/Users/mhjang/Research/WikiLinking/clueweb_plaintext2/";
-            DirectoryReader dr = new DirectoryReader(inDir);
+            DirectoryManager dr = new DirectoryManager(inDir);
 
             for(String file : dr.getFileNameList()) {
                 StringBuilder builder = new StringBuilder();

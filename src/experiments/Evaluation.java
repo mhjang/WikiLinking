@@ -1,4 +1,4 @@
-package Evaluation;
+package experiments;
 
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
@@ -7,10 +7,12 @@ import myungha.utils.SimpleFileReader;
 import myungha.utils.SimpleFileWriter;
 import org.lemurproject.galago.core.eval.*;
 import org.lemurproject.galago.tupleflow.Parameters;
+import simple.io.myungha.DirectoryReader;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -29,7 +31,7 @@ public class Evaluation {
         try {
            countJudgedItems();
 
-            queryEval();
+     //       queryEval();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -68,24 +70,30 @@ public class Evaluation {
     }
 
 
-    public static void queryEval() throws IOException {
+    public static void queryEval(boolean refreshJudgment, String rankingFileDir) throws IOException {
+        if(refreshJudgment) loadCollectedJudgments();
         QuerySetJudgments qset = new QuerySetJudgments("wiki3.qrel", false, true);
+        Path filePathA = (new File("wiki3.qrel")).toPath();
+        Path filePathB = (new File(rankingFileDir+"\\" + "wiki.qrel")).toPath();
 
+        Files.copy(filePathA, filePathB, StandardCopyOption.REPLACE_EXISTING);
         Parameters p = new Parameters();
-        ///Users/mhjang/Downloads/
-        //      p.set("baseline", "./robust.community.desc.mhjang.tr100.txt");
-        //      p.set("baseline", "/Users/mhjang/Downloads/books.title.mhjang.tr100.txt");
-//        p.set("baseline", "C:\\Users\\mhjang\\IdeaProjects\\WikiLinking2\\expnotes\\3methods\\34 queries\\tiled_query_ranking.txt");
-        p.set("baseline", "C:\\Users\\mhjang\\IdeaProjects\\WikiLinking2\\expnotes\\tf vs tiling (large_scale)\\202 queries\\tiled_query_ranking.txt");
-        p.set("tile", "C:\\Users\\mhjang\\IdeaProjects\\WikiLinking2\\expnotes\\tf vs tiling (large_scale)\\202 queries\\tiled_query_ranking.txt");
-        //   p.set("noise", "/Users/mhjang/Documents/teaching_documents/extracted/dataset/applydataset/experiments/c2/noise_output");
         p.set("details", true);
- //       p.set("map", true);
         p.set("metrics", "map");
-        PrintStream ps = new PrintStream((OutputStream)(System.out));
-        Eval evaluator = new Eval();
-        //   evaluator.comparisonEvaluation(p, qset, ps);
-        evaluator.singleEvaluation(p, qset, ps);
+        DirectoryReader dr = new DirectoryReader(rankingFileDir);
+        for(String file : dr.getFileNameList()) {
+            if(file.endsWith("ranking.run")) {
+                p.set("baseline", rankingFileDir + "\\" + file);
+                PrintStream ps = new PrintStream((OutputStream)(new FileOutputStream(new File(rankingFileDir + "\\" + file + ".eval"))));
+                //        PrintStream ps = new PrintStream((OutputStream)(System.out));
+
+                Eval evaluator = new Eval();
+                evaluator.singleEvaluation(p, qset, ps);
+            }
+        }
+
+
+
     }
 
 

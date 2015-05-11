@@ -118,7 +118,7 @@ public class GenAnnotation {
         DBConnector db = new DBConnector("jdbc:mysql://ayr.cs.umass.edu:3306/","wikilinking");
 
     /*
-        DirectoryReader dr = new DirectoryReader("/Users/mhjang/Desktop/Research/WikiLinking/data/annotation");
+        DirectoryManager dr = new DirectoryManager("/Users/mhjang/Desktop/Research/WikiLinking/data/annotation");
         for(String filename : dr.getFileNameList()) {
             filename = filename.replace(".html", "");
             db.sendQuery("INSERT into annotation_pages values ('" + filename + "')");

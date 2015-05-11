@@ -3,7 +3,7 @@ import Tokenizer.Stemmer;
 import Tokenizer.StopWordRemover;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
-import myungha.utils.DirectoryReader;
+import myungha.utils.DirectoryManager;
 import myungha.utils.SimpleFileWriter;
 
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ public class LdaFormatConvert {
         inverseMap = new HashMap<Integer, String>();
 
         try {
-            DirectoryReader dr = new DirectoryReader(inputDir);
+            DirectoryManager dr = new DirectoryManager(inputDir);
             ArrayList<String> docNameList = dr.getFileNameList();
             StopWordRemover sr = new StopWordRemover();
 

@@ -1,3 +1,5 @@
+package experiments;
+
 import Clustering.Document;
 import Clustering.DocumentCollection;
 import TeachingDocParser.Tokenizer;
@@ -13,7 +15,7 @@ import java.util.*;
 import annotation.GenAnnotation;
 import com.google.common.collect.*;
 import db.DBConnector;
-import myungha.utils.DirectoryReader;
+import myungha.utils.DirectoryManager;
 import myungha.utils.SimpleFileReader;
 import myungha.utils.SimpleFileWriter;
 import org.lemurproject.galago.core.retrieval.ScoredDocument;
@@ -52,7 +54,7 @@ public class DocumentQueryGenerator {
 
     public static void generateDropDownMenu() {
         String dir = "/Users/mhjang/Desktop/Research/WikiLinking/data/clueweb_plaintext/tiled/";
-        DirectoryReader dr = new DirectoryReader(dir);
+        DirectoryManager dr = new DirectoryManager(dir);
         DocumentQueryGenerator queryGen = new DocumentQueryGenerator();
 
         for (String filename : dr.getFileNameList()) {
@@ -178,7 +180,7 @@ public class DocumentQueryGenerator {
 
     public static void main(String[] args) throws IOException {
         DocumentQueryGenerator gen = new DocumentQueryGenerator();
-    //    gen.showQuery("clueweb09-en0011-00-31399");
+        //    gen.showQuery("clueweb09-en0011-00-31399");
         //   generateDropDownMenu();
         // mergeRankedListforPolling();
 
@@ -198,7 +200,7 @@ public class DocumentQueryGenerator {
         }
 
 
-        DirectoryReader dr = new DirectoryReader(dir);
+        DirectoryManager dr = new DirectoryManager(dir);
         DocumentQueryGenerator queryGen = new DocumentQueryGenerator();
         Tile.sr = queryGen.sr;
         WikiRetrieval wr = new WikiRetrieval();
