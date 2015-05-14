@@ -17,21 +17,24 @@
       <profile default="true" name="Default" enabled="false">
         <processorPath useClasspath="true" />
       </profile>
-      <profile default="false" name="Maven default annotation processors profile" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="true" />
-        <module name="hackathon" />
-      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="contrib" target="1.6" />
+      <module name="contrib (2)" target="1.7" />
       <module name="core" target="1.6" />
+      <module name="core (2)" target="1.7" />
+      <module name="eval" target="1.7" />
       <module name="galago" target="1.6" />
+      <module name="galago (2)" target="1.7" />
       <module name="hackathon" target="1.7" />
+      <module name="krovetz-stemmer" target="1.7" />
+      <module name="snowball-stemmers" target="1.7" />
       <module name="tupleflow" target="1.6" />
+      <module name="tupleflow (2)" target="1.7" />
+      <module name="tupleflow-gridengine" target="1.7" />
       <module name="tupleflow-typebuilder" target="1.6" />
+      <module name="tupleflow-typebuilder (2)" target="1.7" />
+      <module name="utility" target="1.7" />
     </bytecodeTargetLevel>
   </component>
 </project>

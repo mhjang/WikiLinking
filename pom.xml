@@ -6,9 +6,9 @@
     <packaging>pom</packaging>
 
     <properties>
-        <galago.version>3.7</galago.version>
+        <galago.version>3.8-SNAPSHOT</galago.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <javaVersion>1.7</javaVersion>
+        <javaVersion>1.8</javaVersion>
         <mainClass>edu.umass.ciir.hack.App</mainClass>
     </properties>
 

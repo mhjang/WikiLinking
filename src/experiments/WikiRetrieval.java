@@ -57,9 +57,11 @@ public class WikiRetrieval {
             p.set("metrics", "map");
             List<ScoredDocument> results = null;
 
-            Node root = StructuredQuery.parse(StrUtil.join(d.terms, " "));
+            String tokenizedQuery = StrUtil.join(d.terms, " ");
+            Node root = StructuredQuery.parse(tokenizedQuery);
+            System.out.println("Query: " + tokenizedQuery);
             Node transformed = retrieval.transformQuery(root, p);
-            results = retrieval.executeQuery(transformed, p).scoredDocuments; // issue the query!
+            results = (List<ScoredDocument>) retrieval.executeQuery(transformed, p).scoredDocuments; // issue the query!
 
             for(ScoredDocument sd:results){ // print results
          //       System.out.println(sd.rank+" "+sd.documentName+ " ("+sd.score+")");

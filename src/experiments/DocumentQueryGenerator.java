@@ -180,12 +180,12 @@ public class DocumentQueryGenerator {
 
     public static void main(String[] args) throws IOException {
         DocumentQueryGenerator gen = new DocumentQueryGenerator();
-        //    gen.showQuery("clueweb09-en0011-00-31399");
+        gen.showQuery("clueweb09-en0010-57-10666");
         //   generateDropDownMenu();
         // mergeRankedListforPolling();
 
-
-        String dir = "C://Users/mhjang/Research/WikiLinking/clueweb_plaintext_clinch/";
+/*
+        String dir = "C://Users/mhjang/Research/WikiLinking/tiled_bprm/";
         // a list of clueweb documents that are judged
         LinkedList<String> cluewebJudged = new LinkedList<String>();
 
@@ -229,16 +229,16 @@ public class DocumentQueryGenerator {
         }
         */
 
-
+/*
         int tileNumSum = 0;
         int documentJudgedNum = 0;
         try {
-            SimpleFileWriter tiled = new SimpleFileWriter("tiled_tf_query_ranking.txt");
+            SimpleFileWriter tiled = new SimpleFileWriter("tiled_query_ranking.txt");
             //        SimpleFileWriter original = new SimpleFileWriter("original_query_ranking.txt");
             SimpleFileWriter tileNumWriter = new SimpleFileWriter("tile_query.txt");
             //        SimpleFileWriter manual = new SimpleFileWriter("manual_query_ranking.txt");
             for (String filename : dr.getFileNameList()) {
-
+                filename = "clueweb09-en0003-25-20700";
                 // sometimes there is an error, you don't want to start the whole generation over.
                 // If the annotation file exists, it skips.
                 // If there is any change in polling, you need to clear up the annotation directory, otherwise it'll skip everything.
@@ -248,7 +248,7 @@ public class DocumentQueryGenerator {
                         continue;
                         }
                     */
-
+/*
                 if (!cluewebJudged.contains(filename.replace(".html", ""))) continue;
                 //         if (!manualQuery.containsKey(filename)) continue;
 
@@ -322,7 +322,7 @@ public class DocumentQueryGenerator {
                 }
                 */
                 //   String topGlobalQuery = queryGen.generateQuerybyFrequency(fullTextBulider.toString(), 3);
-                for (Tile t : tiles) {
+ /*               for (Tile t : tiles) {
                     List<ScoredDocument> docs = (List<ScoredDocument>) wr.runQuery(queryGen.generateQuerybyFrequency(t.text, 10));
                     int rankWeight = 1000;
                     for (ScoredDocument sd : docs) {
@@ -345,13 +345,14 @@ public class DocumentQueryGenerator {
      */
 
             //    System.out.println("Tiled Rank");
-                ImmutableMultiset<String> entryList = Multisets.copyHighestCountFirst(weightedDocs);
+   /*             ImmutableMultiset<String> entryList = Multisets.copyHighestCountFirst(weightedDocs);
                 HashSet<String> topKDocsInTile = new HashSet<String>();
 
                 rank = 1;
                 for (Multiset.Entry<String> e : entryList.entrySet()) {
                     String documentName = e.getElement().replaceAll(".html", "");
                     tiled.writeLine(filename + "\t 0 \t" + documentName + "\t" + rank + "\t" + e.getCount() + "\t" + "tile");
+                    System.out.println(filename + "\t 0 \t" + documentName + "\t" + rank + "\t" + e.getCount() + "\t" + "tile");
                     //        topKDocsInTile.add(e.getElement());
                     if (rank == topK) break;
                     rankedSet.add(e.getElement());
@@ -385,7 +386,7 @@ public class DocumentQueryGenerator {
             System.out.println("list fraction: " + fraction);
             */
             //     manual.close();
-            tiled.close();
+   /*         tiled.close();
             //            original.close();
             tileNumWriter.close();
 
@@ -402,6 +403,7 @@ public class DocumentQueryGenerator {
                 //       queryGen.generateQuerybyTFIDF(dir, filename, 10);
 
                 //}
+                */
         }
 
 

@@ -18,10 +18,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by mhjang on 5/7/2015.
@@ -34,6 +31,8 @@ public class ExperimentHarness {
     DocumentQueryGenerator queryGen;
     Parameters p;
     String paramFileDir;
+    public static int RANKING_ADDITIVE = 0;
+    public static int RANKING_RECIPROCAL = 1;
     public ExperimentHarness(String[] args) throws IOException {
         System.out.println(args);
         p = Parameters.parseArgs(args);
@@ -53,61 +52,101 @@ public class ExperimentHarness {
         String listDir = p.get("querylist", "./");
         SimpleFileReader sr = new SimpleFileReader(listDir);
         LinkedList<String> docList = new LinkedList<String>();
-        while(sr.hasMoreLines()) {
+        while (sr.hasMoreLines()) {
             docList.add(sr.readLine());
         }
         String baseDir = ""; //clueweb directory
         ArrayList<Parameters> expParam = (ArrayList<Parameters>) p.getList("experiment");
-        ArrayList<Parameters> tiledParam = (ArrayList<Parameters>)expParam.get(0).get("tiled");
+        ArrayList<Parameters> tiledParam = (ArrayList<Parameters>) expParam.get(0).get("tiled");
         Parameters tp = tiledParam.get(0);
         boolean useTFTile = tp.get("tf_tile", false);
         int querySize = (int) p.get("querySize", 10);
-        int tfInclude = (int) tp.get("tf_include", 0);
         boolean useWeightedTile = tp.get("weighted", false);
+        int rankingMethod;
+        String rankingMethodSig = p.get("aggregation", "additive");
+        if (rankingMethodSig.equals("additive"))
+            rankingMethod = RANKING_ADDITIVE;
+        else
+            rankingMethod = RANKING_RECIPROCAL;
         String signature1;
-        if(useTFTile)
+        if (useTFTile)
             signature1 = "tftile";
         else
-            signature1 = "";
+            signature1 = "no_tftile";
+
+        boolean runTileExp = p.get("runTile", true);
+        boolean runTFExp = p.get("runTFBaseline", false);
+        boolean runManual = p.get("runManual", false);
+        SimpleFileWriter tileWriter = null;
+        SimpleFileWriter TFWriter = null;
+        SimpleFileWriter manualWriter = null;
+
+        int tfInclude = (int)tp.get("tf_include", 0);
+   //     for (int tfInclude = 1; tfInclude < 10; tfInclude++) {
+            String expOutputDir = p.get("expDir", "./");
+            expOutputDir = expOutputDir + "/" + "exp" + "_" + signature1 + "_" + rankingMethodSig + "_" + tfInclude + "_" + (querySize - tfInclude);
+            DirectoryManager.makeDir(expOutputDir);
+
+            int retrieved = (int) p.get("retrieved", 20);
+            String dataDir = p.get("data", "");
 
 
+            if (runTileExp)
+                tileWriter = new SimpleFileWriter(expOutputDir + "/" + "tile_ranking.run");
+            if (runTFExp)
+                TFWriter = new SimpleFileWriter(expOutputDir + "/" + "tf_ranking.run");
+            if (runManual)
+                manualWriter = new SimpleFileWriter(expOutputDir + "/" + "manual.run");
 
-        String expOutputDir = p.get("expDir", "./");
-        expOutputDir = expOutputDir + "/" + "tiled" + "_"+signature1 + "_"+tfInclude+"_"+(querySize - tfInclude);
-        DirectoryManager.makeDir(expOutputDir);
+            Path filePathA = (new File(paramFileDir)).toPath();
+            Path filePathB = (new File(expOutputDir + "/" + paramFileDir)).toPath();
+            Files.copy(filePathA, filePathB, StandardCopyOption.REPLACE_EXISTING);
+            for (String doc : docList) {
+                LinkedList<Tile> tiles = readTiles(dataDir + "\\" + doc);
+                String fullText = joinTiles(tiles);
+                if (runTFExp) {
+                    List<ScoredDocument> docs = (List<ScoredDocument>) wr.runQuery(queryGen.generateQuerybyFrequency(fullText, querySize));
+                    for (ScoredDocument sd : docs) {
+                        TFWriter.writeLine(sd.toTRECformat(doc).replaceAll(".html", ""));
+                    }
+                }
+                if (runTileExp) {
+                    if (useWeightedTile)
+                        computeTileImportance(tiles);
+                    if (useTFTile) {
+                        tiles.add(new Tile(fullText));
+                    }
 
-        int retrieved = (int)p.get("retrieved", 20);
-        String dataDir = p.get("data", "");
+                    HashMap<String, Double> weightedRankedList = runTileExperiment(tiles, tfInclude, querySize, rankingMethod);
+                    List<Map.Entry<String, Double>> entries = new LinkedList(weightedRankedList.entrySet());
+                    Collections.sort((List) entries, new Comparator() {
+                        @Override
+                        public int compare(Object o1, Object o2) {
+                            Map.Entry<String, Double> m1 = (Map.Entry<String, Double>) (o1);
+                            Map.Entry<String, Double> m2 = (Map.Entry<String, Double>) (o2);
 
-        SimpleFileWriter outputWriter = new SimpleFileWriter(expOutputDir + "/" + "tiled_ranking.run");
-        Path filePathA = (new File(paramFileDir)).toPath();
-        Path filePathB = (new File(expOutputDir + "/" + paramFileDir)).toPath();
-        Files.copy(filePathA, filePathB, StandardCopyOption.REPLACE_EXISTING);
-        for(String doc : docList) {
-            LinkedList<Tile> tiles = readTiles(dataDir+ "\\" + doc);
-            String fullText = joinTiles(tiles);
-           // if(p.get("experiments").includes("tf")
-                    // run TFExperiment(fullText)
-           if(useWeightedTile)
-               computeTileImportance(tiles);
-           if(useTFTile)
-               tiles.add(new Tile(fullText));
-           Multiset<String> weightedRankedList = runTileExperiment(tiles);
-            ImmutableMultiset<String> entryList = Multisets.copyHighestCountFirst(weightedRankedList);
+                            return Double.compare(m2.getValue(), m1.getValue());
+                        }
+                    });
 
+                    int rank = 1;
+                    for (Map.Entry<String, Double> m : entries) {
+                        String documentName = m.getKey().replaceAll(".html", "");
+                        tileWriter.writeLine(doc + "\t 0 \t" + documentName + "\t" + rank + "\t" + m.getValue() + "\t" + "tile");
+                        if (rank == retrieved) break;
+                        rank++;
+                    }
+                }
+                  }
 
-            int rank = 1;
-            for (Multiset.Entry<String> e : entryList.entrySet()) {
-                String documentName = e.getElement().replaceAll(".html", "");
-                outputWriter.writeLine(doc + "\t 0 \t" + documentName + "\t" + rank + "\t" + e.getCount() + "\t" + "tile");
-                if (rank == retrieved) break;
-                rank++;
-            }
+            if (tileWriter != null)
+                tileWriter.close();
+            if (TFWriter != null)
+                TFWriter.close();
+            Evaluation.queryEval(false, expOutputDir);
         }
-        outputWriter.close();
-        Evaluation.queryEval(false, expOutputDir);
+ //   }
 
-    }
 /*
     private void generateRankOutput(String qid, Multiset<String> weightedDocs, String output) throws IOException {
         ImmutableMultiset<String> entryList = Multisets.copyHighestCountFirst(weightedDocs);
@@ -127,17 +166,29 @@ public class ExperimentHarness {
 
     }
     */
-    private Multiset<String> runTileExperiment(LinkedList<Tile> tiles) {
-        Multiset<String> weightedDocs = HashMultiset.create();
+    private HashMap<String, Double> runTileExperiment(LinkedList<Tile> tiles, int tfInclude, int querySize, int rankingMethod) {
+        HashMap<String, Double> weightedDocs = new HashMap<String, Double>();
+        String fullText = joinTiles(tiles);
+        String globalQuery = queryGen.generateQuerybyFrequency(fullText, tfInclude);
         for (Tile t : tiles) {
-            List<ScoredDocument> docs = (List<ScoredDocument>) wr.runQuery(queryGen.generateQuerybyFrequency(t.text, 10));
-            int rankWeight = 1000;
+            List<ScoredDocument> docs = (List<ScoredDocument>) wr.runQuery(queryGen.generateQuerybyFrequency(t.text, (querySize - tfInclude)) + " " + globalQuery);
+            int rank = 1;
+            int n = docs.size()+1;
             for (ScoredDocument sd : docs) {
-                weightedDocs.add(sd.documentName, (int) ((rankWeight--) * t.importance));
+                if(!weightedDocs.containsKey(sd.documentName))
+                    weightedDocs.put(sd.documentName, 0.0);
+                if (rankingMethod == RANKING_ADDITIVE)
+                    weightedDocs.put(sd.documentName, weightedDocs.get(sd.documentName) + (double)(n - rank) * t.importance);
+                else if(rankingMethod == RANKING_RECIPROCAL)
+                    weightedDocs.put(sd.documentName, (double)1.0/(double)rank);
+                rank++;
             }
+
         }
+
         return weightedDocs;
     }
+
 
     private void writeParamFile(String outputDir) {
 
@@ -188,9 +239,12 @@ public class ExperimentHarness {
     }
 
     public static void main(String[] args) throws IOException {
+        long startTime = System.nanoTime();
         ExperimentHarness eh = new ExperimentHarness(args);
         eh.runRankingExperiments();
-
+        long endTime = System.nanoTime();
+        double durationInSec = (endTime - startTime)/1000000000.0;
+        System.out.println("execution time: " + durationInSec);
 
 
 

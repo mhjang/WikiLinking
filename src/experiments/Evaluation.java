@@ -5,7 +5,9 @@ import com.google.common.collect.Multiset;
 import db.DBConnector;
 import myungha.utils.SimpleFileReader;
 import myungha.utils.SimpleFileWriter;
-import org.lemurproject.galago.core.eval.*;
+import org.lemurproject.galago.core.eval.Eval;
+import org.lemurproject.galago.core.eval.QueryJudgments;
+import org.lemurproject.galago.core.eval.QuerySetJudgments;
 import org.lemurproject.galago.tupleflow.Parameters;
 import simple.io.myungha.DirectoryReader;
 
@@ -14,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -23,13 +26,18 @@ import java.util.LinkedList;
 public class Evaluation {
 
     public Evaluation() {
-        loadCollectedJudgments();
+        loadCollectedJudgments(2);
     }
 
     public static void main(String[] args) {
        // loadCollectedJudgments();
         try {
-           countJudgedItems();
+     //       for(int i=0; i<=9; i++) {
+            int i=0;
+                queryEval(true, "C:\\Users\\mhjang\\IdeaProjects\\WikiLinking2\\exp\\exp_all_no_tftile_additive_" + i + "_" + (10-i));
+      //      }
+     //       queryEval("C:\\Users\\mhjang\\IdeaProjects\\WikiLinking2\\exp\\exp_no_tftile_additive_0_10\\tile_ranking.run");
+      //     countJudgedItems();
 
      //       queryEval();
         } catch (IOException e) {
@@ -41,10 +49,17 @@ public class Evaluation {
     /**
      * Generate a relevance file from the database tables
      */
-    private static void loadCollectedJudgments() {
+    private static void loadCollectedJudgments(int relevantThreshold) {
+        String binaryOutput = null;
+        String gradedOutput = null;
         try {
             DBConnector db = new DBConnector("jdbc:mysql://localhost/", "wikilinking");
-            SimpleFileWriter sw = new SimpleFileWriter("wiki3.qrel");
+            binaryOutput = "wiki_"+relevantThreshold + ".binary.qrel";
+            gradedOutput = "wiki_"+relevantThreshold + ".graded.qrel";
+
+            SimpleFileWriter binaryRel = new SimpleFileWriter(binaryOutput);
+            SimpleFileWriter gradedRel = new SimpleFileWriter(gradedOutput);
+
             ResultSet rs = db.getQueryResult("select *, avg(rating) r from rating group by clueweb_id, wiki_title");
             while (rs.next()) {
                 String cluewebId = rs.getString("clueweb_id");
@@ -55,40 +70,92 @@ public class Evaluation {
                 else
                     rating = 0;
 */
-                if(rating == 0)
-                    rating = 0;
-                else
-                    rating = 5 - rating;
+                int binaryRating = 0;
+                int gradedRating = 0;
+
+
+
+                if (rating == 0)
+                    binaryRating = 0;
+                else {
+                    if (rating <= relevantThreshold)
+                        binaryRating = 1;
+                    else
+                        binaryRating = 0;
+                }
+
+                if (rating == 1) gradedRating = 3;
+                else if (rating == 2) gradedRating = 2;
+                else if (rating == 3) gradedRating = 1;
+                else gradedRating = 0;
+                binaryRel.writeLine(cluewebId + "\t 0 \t" + wikiTitle.replace(" ", "_") + "\t" + binaryRating);
+                gradedRel.writeLine(cluewebId + "\t 0 \t" + wikiTitle.replace(" ", "_") + "\t" + gradedRating);
+
+            }
+
+
+
 
            //     System.out.println(cluewebId + "\t 0 \t" + wikiTitle.replace(" ", "_") + "\t" + rating);
-                sw.writeLine(cluewebId + "\t 0 \t" + wikiTitle.replace(" ", "_") + "\t" + rating);
-            }
-            sw.close();
+
+
+            binaryRel.close();
+            gradedRel.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 
+    public static void queryEval(String file) throws IOException {
+        QuerySetJudgments qset = new QuerySetJudgments("wiki3.qrel", true, true);
+        Parameters p = new Parameters();
+        p.set("baseline", file);
+        p.set("details", false);
+//        p.set("metrics", "map");
+        PrintStream ps = new PrintStream((OutputStream)(System.out));
+
+        Eval evaluator = new Eval();
+        evaluator.singleEvaluation(p, qset, ps);
+
+    }
+
+
     public static void queryEval(boolean refreshJudgment, String rankingFileDir) throws IOException {
-        if(refreshJudgment) loadCollectedJudgments();
-        QuerySetJudgments qset = new QuerySetJudgments("wiki3.qrel", false, true);
-        Path filePathA = (new File("wiki3.qrel")).toPath();
-        Path filePathB = (new File(rankingFileDir+"\\" + "wiki.qrel")).toPath();
+        int relevantThreshold = 2;
+        String binaryjudgementFile = "wiki_"+relevantThreshold + ".binary.qrel";
+        String gradedjudgementFile = "wiki_"+relevantThreshold + ".graded.qrel";
+
+        if(refreshJudgment)
+            loadCollectedJudgments(2);
+        QuerySetJudgments binaryQset = new QuerySetJudgments(binaryjudgementFile, true, true);
+        QuerySetJudgments gradedQset = new QuerySetJudgments(gradedjudgementFile, true, true);
+
+        Path filePathA = (new File(binaryjudgementFile)).toPath();
+        Path filePathB = (new File(rankingFileDir+"\\" + binaryjudgementFile)).toPath();
 
         Files.copy(filePathA, filePathB, StandardCopyOption.REPLACE_EXISTING);
         Parameters p = new Parameters();
-        p.set("details", true);
-        p.set("metrics", "map");
+        p.set("details", false);
+
+        Parameters p2 = new Parameters();
+        p2.set("details", false);
         DirectoryReader dr = new DirectoryReader(rankingFileDir);
         for(String file : dr.getFileNameList()) {
             if(file.endsWith("ranking.run")) {
+                System.out.println(file);
                 p.set("baseline", rankingFileDir + "\\" + file);
-                PrintStream ps = new PrintStream((OutputStream)(new FileOutputStream(new File(rankingFileDir + "\\" + file + ".eval"))));
-                //        PrintStream ps = new PrintStream((OutputStream)(System.out));
+                p2.set("baseline", rankingFileDir + "\\" + file);
+
+                PrintStream ps = new PrintStream((OutputStream)(new FileOutputStream(new File(rankingFileDir + "\\" + file + ".all.binary.eval"))));
+                PrintStream ps2 = new PrintStream((OutputStream)(new FileOutputStream(new File(rankingFileDir + "\\" + file + ".all.graded.eval"))));
+
+            //    PrintStream ps = new PrintStream((OutputStream)(System.out));
 
                 Eval evaluator = new Eval();
-                evaluator.singleEvaluation(p, qset, ps);
+                evaluator.singleEvaluation(p, binaryQset, ps);
+                evaluator.singleEvaluation(p2, gradedQset, ps2);
+
             }
         }
 
@@ -114,8 +181,9 @@ public class Evaluation {
                 String query = tokens[1];
                 System.out.println(cluewebId + ":" + query);
                 manualQuery.put(cluewebId, query);
-                if(!qset.containsKey(cluewebId)) continue;
-                QueryJudgments qs = qset.get(cluewebId);
+
+                org.lemurproject.galago.core.eval.QueryJudgments qs = qset.get(cluewebId);
+                if(qs == null) continue;
                 qsSizeSum += qs.size();
                 numOfQueries++;
 
@@ -149,8 +217,8 @@ public class Evaluation {
                 String[] tokens = line.split("\t");
                 // if(.containsKey(tokens[0]) && qset.get(tokens[0]).size() >= 10)
                 QueryJudgments qs = qset.get(tokens[0]);
-                if(qs.containsKey(tokens[2]))
-                    OriginaljudgedItems.add(tokens[0]);
+            //    if(qs.containsKey(tokens[2]))
+            //        OriginaljudgedItems.add(tokens[0]);
             }
 
             sr = new SimpleFileReader("C:\\Users\\mhjang\\IdeaProjects\\WikiLinking2\\expnotes\\tf vs tiling (large_scale)\\202 queries\\tiled_query_ranking.txt");
@@ -158,9 +226,9 @@ public class Evaluation {
             while(sr.hasMoreLines()) {
                 line = sr.readLine();
                 String[] tokens = line.split("\t");
-                QueryJudgments qs = qset.get(tokens[0]);
-                if(qs.containsKey(tokens[2]))
-                    tiledjudgedItems.add(tokens[0]);
+                org.lemurproject.galago.core.eval.QueryJudgments qs = qset.get(tokens[0]);
+           //    if(qs.containsKey(tokens[2]))
+           //         tiledjudgedItems.add(tokens[0]);
             }
 
             System.out.println("TF Query Judged List");
