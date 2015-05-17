@@ -18,6 +18,7 @@ import java.nio.file.StandardCopyOption;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 /**
@@ -29,19 +30,37 @@ public class Evaluation {
         loadCollectedJudgments(2);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+    //    filter();
        // loadCollectedJudgments();
-        try {
+    //    try {
      //       for(int i=0; i<=9; i++) {
-            int i=0;
-                queryEval(true, "C:\\Users\\mhjang\\IdeaProjects\\WikiLinking2\\exp\\exp_all_no_tftile_additive_" + i + "_" + (10-i));
+  //          int i=0;
+  //              queryEval(true, "C:\\Users\\mhjang\\IdeaProjects\\WikiLinking2\\exp\\exp_all_no_tftile_additive_" + i + "_" + (10-i));
       //      }
-     //       queryEval("C:\\Users\\mhjang\\IdeaProjects\\WikiLinking2\\exp\\exp_no_tftile_additive_0_10\\tile_ranking.run");
+            queryEval(false, "C:\\Users\\mhjang\\IdeaProjects\\WikiLinking2\\exp\\exp_no_tftile_rr_0_10");
       //     countJudgedItems();
 
      //       queryEval();
-        } catch (IOException e) {
-            e.printStackTrace();
+ //       } catch (IOException e) {
+ //           e.printStackTrace();
+ //       }
+
+    }
+
+    public static void filter() throws IOException {
+        SimpleFileReader sr = new SimpleFileReader("C:\\Users\\mhjang\\IdeaProjects\\WikiLinking2\\query_list_10");
+        HashSet<String> doc = new HashSet<String>();
+        while(sr.hasMoreLines()) {
+            doc.add(sr.readLine());
+        }
+        SimpleFileWriter sw = new SimpleFileWriter("C:\\Users\\mhjang\\IdeaProjects\\WikiLinking2\\exp\\exp_clinch_no_tftile_additive_0_10\\tile_ranking_10.run");
+        SimpleFileReader sr2 = new SimpleFileReader("C:\\Users\\mhjang\\IdeaProjects\\WikiLinking2\\exp\\exp_clinch_no_tftile_additive_0_10\\tile_ranking.run");
+        while(sr2.hasMoreLines()) {
+            String line = sr2.readLine();
+            String docId = line.split("\t")[0];
+            if(doc.contains(docId))
+                sw.writeLine(line);
         }
 
     }
@@ -137,9 +156,12 @@ public class Evaluation {
         Files.copy(filePathA, filePathB, StandardCopyOption.REPLACE_EXISTING);
         Parameters p = new Parameters();
         p.set("details", false);
+ //       p.set("metrics", "map");
 
         Parameters p2 = new Parameters();
         p2.set("details", false);
+  //      p2.set("metrics", "map");
+
         DirectoryReader dr = new DirectoryReader(rankingFileDir);
         for(String file : dr.getFileNameList()) {
             if(file.endsWith("ranking.run")) {
@@ -147,8 +169,8 @@ public class Evaluation {
                 p.set("baseline", rankingFileDir + "\\" + file);
                 p2.set("baseline", rankingFileDir + "\\" + file);
 
-                PrintStream ps = new PrintStream((OutputStream)(new FileOutputStream(new File(rankingFileDir + "\\" + file + ".all.binary.eval"))));
-                PrintStream ps2 = new PrintStream((OutputStream)(new FileOutputStream(new File(rankingFileDir + "\\" + file + ".all.graded.eval"))));
+                PrintStream ps = new PrintStream((OutputStream)(new FileOutputStream(new File(rankingFileDir + "\\" + file + ".map.binary.eval"))));
+                PrintStream ps2 = new PrintStream((OutputStream)(new FileOutputStream(new File(rankingFileDir + "\\" + file + ".map.graded.eval"))));
 
             //    PrintStream ps = new PrintStream((OutputStream)(System.out));
 

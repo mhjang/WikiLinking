@@ -1,13 +1,13 @@
 <component name="libraryTable">
   <library name="Maven: org.lemurproject.galago:tupleflow:3.8-SNAPSHOT">
     <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/org/lemurproject/galago/tupleflow/3.8-SNAPSHOT/tupleflow-3.8-20150426.211542-9.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/lemurproject/galago/tupleflow/3.8-SNAPSHOT/tupleflow-3.8-SNAPSHOT.jar!/" />
     </CLASSES>
     <JAVADOC>
-      <root url="jar://$MAVEN_REPOSITORY$/org/lemurproject/galago/tupleflow/3.8-SNAPSHOT/tupleflow-3.8-20150426.211542-9-javadoc.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/lemurproject/galago/tupleflow/3.8-SNAPSHOT/tupleflow-3.8-SNAPSHOT-javadoc.jar!/" />
     </JAVADOC>
     <SOURCES>
-      <root url="jar://$MAVEN_REPOSITORY$/org/lemurproject/galago/tupleflow/3.8-SNAPSHOT/tupleflow-3.8-20150426.211542-9-sources.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/lemurproject/galago/tupleflow/3.8-SNAPSHOT/tupleflow-3.8-SNAPSHOT-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

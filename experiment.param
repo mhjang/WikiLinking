@@ -1,11 +1,11 @@
 {
-"querylist":"C:\\Users\\mhjang\\IdeaProjects\\WikiLinking2\\query_ranking_list",
+"querylist":"C:\\Users\\mhjang\\IdeaProjects\\WikiLinking2\\query_list_10",
 "runTFBaseline":false,
-"runTile":false,
-"runManual":true,
+"runTile":true,
+"runManual":false,
 "experiment":[{"tiled": [
                {
-                "weighted":false,
+                "weighted":true,
                 "tf_tile":false,
                 "tf_include":0,
                }]}],

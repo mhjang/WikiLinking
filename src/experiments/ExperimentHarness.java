@@ -70,9 +70,9 @@ public class ExperimentHarness {
             rankingMethod = RANKING_RECIPROCAL;
         String signature1;
         if (useTFTile)
-            signature1 = "tftile";
+            signature1 = "weighted_tftile";
         else
-            signature1 = "no_tftile";
+            signature1 = "weighted_no_tftile";
 
         boolean runTileExp = p.get("runTile", true);
         boolean runTFExp = p.get("runTFBaseline", false);
@@ -194,12 +194,31 @@ public class ExperimentHarness {
 
     }
     private void computeTileImportance(LinkedList<Tile> tiles) {
-        double denorm = 0.0;
+      /*  double denorm = 0.0;
         for (Tile t : tiles) {
             denorm += (1.0 - t.stopwordContainment);
         }
         for (Tile t : tiles) {
             t.importance = (1.0 - t.stopwordContainment) / denorm;
+        }
+       */
+        TiledDocument td = new TiledDocument(tiles);
+
+        for(Tile t: tiles) {
+            double kld = 0.0;
+
+
+            for(String term : t.tokens) {
+                kld += t.getTermProb(term) * Math.log(t.getTermProb(term) / td.getTermProb(term));
+            }
+            t.importance = kld;
+        }
+        double denorm = 0.0;
+        for (Tile t : tiles) {
+            denorm += t.importance;
+        }
+        for (Tile t : tiles) {
+            t.importance = (1.0 - (t.importance / denorm));
         }
     }
 
