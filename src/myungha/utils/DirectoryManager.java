@@ -1,4 +1,4 @@
-package myungha;
+package myungha.utils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -7,14 +7,14 @@ import java.util.ArrayList;
  * Created by mhjang on 6/3/14.
  * It reads all files in a directory
  */
-public class DirectoryReader {
+public class DirectoryManager {
     static int FILE_ONLY = 0, DIRECTORY_ONLY = 1;
     ArrayList<String> filenames;
     ArrayList<String> filePathList;
     int openOption = FILE_ONLY; // default
     String dir;
 
-    public DirectoryReader(String dir_, int option) {
+    public DirectoryManager(String dir_, int option) {
 
         final File folder = new File(dir);
         filenames = new ArrayList<String>();
@@ -24,7 +24,7 @@ public class DirectoryReader {
         readFiles(folder);
     }
 
-    public DirectoryReader(String dir) {
+    public DirectoryManager(String dir) {
 
         final File folder = new File(dir);
         filenames = new ArrayList<String>();
@@ -44,6 +44,22 @@ public class DirectoryReader {
                 if (!fileEntry.getName().contains(".DS_Store")) {
                     filenames.add(fileEntry.getName());
                 }
+            }
+        }
+    }
+
+    public static void makeDir(String dirName) {
+        File theDir = new File(dirName);
+        // if the directory does not exist, create it
+        if (!theDir.exists()) {
+            boolean result = false;
+
+            try{
+                theDir.mkdirs();
+                result = true;
+            }
+            catch(SecurityException se){
+                //handle it
             }
         }
     }

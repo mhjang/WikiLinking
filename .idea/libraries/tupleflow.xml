@@ -1,0 +1,63 @@
+<component name="libraryTable">
+  <library name="tupleflow">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/trove4j-3.0.2.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/antlr-2.7.7.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/jetty-util-6.1.5.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/tupleflow-typebuilder-3.5.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/commons-httpclient-3.1.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/guava-11.0.2.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/jsp-api-2.1.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/xz-1.0.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/httpcore-4.1.3.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/slf4j-nop-1.6.6.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/drmaa-1.0.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/core-3.5.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/servlet-api-2.5-6.1.5.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/commons-codec-1.4.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/json-20090211.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/dom4j-1.6.1.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/maven-plugin-api-2.0.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/commons-io-2.1.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/tupleflow-3.5.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/javassist-3.12.1.GA.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/jsr305-1.3.9.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/gson-2.2.2.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/commons-lang-2.5.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/antlr-runtime-3.0.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/libthrift-0.8.0.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/contrib-3.5.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/commons-logging-1.1.1.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/bliki-core-3.0.16.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/commons-compress-1.4.1.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/httpclient-4.1.2.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/stringtemplate-3.0.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/snappy-java-1.0.5-M4.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/xmlenc-0.52.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/jetty-embedded-6.1.5.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/jetty-6.1.5.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/slf4j-api-1.6.6.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/reflections-0.9.8.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/tupleflow/src/main/java/org/lemurproject/galago/tupleflow/xml-apis-1.0.b2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$USER_HOME$/Documents/lemur-galago/contrib/src/main/java" />
+      <root url="file://$USER_HOME$/Documents/lemur-galago/contrib/src/test/java" />
+      <root url="file://$USER_HOME$/Documents/lemur-galago/core/src/main/java" />
+      <root url="file://$USER_HOME$/Documents/lemur-galago/core/src/test/java" />
+      <root url="file://$USER_HOME$/Documents/lemur-galago/eval/src/main/java" />
+      <root url="file://$USER_HOME$/Documents/lemur-galago/eval/src/test/java" />
+      <root url="file://$USER_HOME$/Documents/lemur-galago/krovetz-stemmer/src/main/java" />
+      <root url="file://$USER_HOME$/Documents/lemur-galago/snowball-stemmers/src/main/java" />
+      <root url="file://$USER_HOME$/Documents/lemur-galago/tupleflow-gridengine/src/main/java" />
+      <root url="file://$USER_HOME$/Documents/lemur-galago/tupleflow-gridengine/src/test/java" />
+      <root url="file://$USER_HOME$/Documents/lemur-galago/tupleflow-typebuilder/src/main/java" />
+      <root url="file://$USER_HOME$/Documents/lemur-galago/tupleflow-typebuilder/src/test/java" />
+      <root url="file://$USER_HOME$/Documents/lemur-galago/tupleflow/src/main/java" />
+      <root url="file://$USER_HOME$/Documents/lemur-galago/tupleflow/src/test/java" />
+      <root url="file://$USER_HOME$/Documents/lemur-galago/utility/src/main/java" />
+      <root url="file://$USER_HOME$/Documents/lemur-galago/utility/src/test/java" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,4 +1,8 @@
+package experiments;
+
 import java.util.List;
+
+import myungha.utils.StrUtil;
 import org.lemurproject.galago.core.parse.Document;
 import org.lemurproject.galago.core.parse.TagTokenizer;
 import org.lemurproject.galago.core.retrieval.Retrieval;
@@ -24,13 +28,24 @@ public class WikiRetrieval {
         }
 
     }
+
+    public void readByWikiId() throws Exception{
+        Document.DocumentComponents dc = new Document.DocumentComponents(true,false,true);
+        String jsonConfigFile = "search.params";
+        Parameters globalParams = Parameters.parseFile(jsonConfigFile);
+        Retrieval retrieval= RetrievalFactory.instance(globalParams);
+        Document d = retrieval.getDocument("Model_figure",dc);
+        for (int j=0;j<d.terms.size();j++){
+            System.out.print(d.terms.get(j) + " ");
+        }
+    }
     public List<ScoredDocument> runQuery(String query) {
         try {
             String jsonConfigFile = "search.params";
             query = query.replaceAll("#","");
             query = query.replaceAll("\"","");
 
-            System.out.println("query: " + query);
+         //   System.out.println("query: " + query);
             TagTokenizer tt = new TagTokenizer();
             Document d = tt.tokenize(query);
             Parameters globalParams = Parameters.parseFile(jsonConfigFile);
@@ -42,9 +57,11 @@ public class WikiRetrieval {
             p.set("metrics", "map");
             List<ScoredDocument> results = null;
 
-            Node root = StructuredQuery.parse(d.text);
+            String tokenizedQuery = StrUtil.join(d.terms, " ");
+            Node root = StructuredQuery.parse(tokenizedQuery);
+            System.out.println("Query: " + tokenizedQuery);
             Node transformed = retrieval.transformQuery(root, p);
-            results = retrieval.executeQuery(transformed, p).scoredDocuments; // issue the query!
+            results = (List<ScoredDocument>) retrieval.executeQuery(transformed, p).scoredDocuments; // issue the query!
 
             for(ScoredDocument sd:results){ // print results
          //       System.out.println(sd.rank+" "+sd.documentName+ " ("+sd.score+")");
@@ -60,9 +77,9 @@ public class WikiRetrieval {
         return null;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         WikiRetrieval wr = new WikiRetrieval();
-        wr.runQuery("#combine ( award marley produce 2008 hollywood february marley  announce star bob walk greatest scorsese 2001: rita 11 biopic rock bbc rank roll )");
-
+     //   wr.runQuery("#combine ( award marley produce 2008 hollywood february marley  announce star bob walk greatest scorsese 2001: rita 11 biopic rock bbc rank roll )");
+        wr.readByWikiId();
     }
 }

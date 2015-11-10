@@ -1,3 +1,5 @@
+package experiments;
+
 import Clustering.Document;
 import Clustering.DocumentCollection;
 import TeachingDocParser.Tokenizer;
@@ -6,7 +8,6 @@ import Tokenizer.HTMLParser;
 import Tokenizer.Stemmer;
 import Tokenizer.StopWordRemover;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.util.*;
@@ -14,9 +15,9 @@ import java.util.*;
 import annotation.GenAnnotation;
 import com.google.common.collect.*;
 import db.DBConnector;
-import myungha.DirectoryReader;
-import myungha.SimpleFileReader;
-import myungha.SimpleFileWriter;
+import myungha.utils.DirectoryManager;
+import myungha.utils.SimpleFileReader;
+import myungha.utils.SimpleFileWriter;
 import org.lemurproject.galago.core.retrieval.ScoredDocument;
 
 /*
@@ -27,17 +28,24 @@ public class DocumentQueryGenerator {
     Stemmer stemmer = new Stemmer();
     StopWordRemover sr = new StopWordRemover();
 
+    public DocumentQueryGenerator() {
+        Tile.sr = this.sr;
+    }
 
     static class Tile {
         String text;
         static StopWordRemover sr;
         double stopwordContainment = 0.0;
-        public Tile (String t) {
+        int numOfTokens = 0;
+        double importance = 0.0;
+
+        public Tile(String t) {
             text = t;
             String[] tokens = text.split(" ");
             String[] newTokens = sr.removeStopWords(tokens);
-            if(tokens.length > 0)
-                stopwordContainment = (double)(tokens.length - newTokens.length)/(double)tokens.length;
+            numOfTokens = tokens.length;
+            if (tokens.length > 0)
+                stopwordContainment = (double) (tokens.length - newTokens.length) / (double) tokens.length;
             else
                 stopwordContainment = 0.0;
         }
@@ -46,7 +54,7 @@ public class DocumentQueryGenerator {
 
     public static void generateDropDownMenu() {
         String dir = "/Users/mhjang/Desktop/Research/WikiLinking/data/clueweb_plaintext/tiled/";
-        DirectoryReader dr = new DirectoryReader(dir);
+        DirectoryManager dr = new DirectoryManager(dir);
         DocumentQueryGenerator queryGen = new DocumentQueryGenerator();
 
         for (String filename : dr.getFileNameList()) {
@@ -66,8 +74,117 @@ public class DocumentQueryGenerator {
         }
     }
 
-    public static void main(String[] args) {
+
+    public void showQuery(String documentName) throws IOException {
+        LinkedList<Tile> tiles = new LinkedList<Tile>();
+        Stemmer stem = new Stemmer();
+        String baseDir = "C:\\Users\\mhjang\\Research\\WikiLinking\\tiled_bprm\\";
+
+        SimpleFileReader sr = new SimpleFileReader(baseDir + documentName);
+        WikiRetrieval wr = new WikiRetrieval();
+
+
+        boolean tileOpened = false;
+        StringBuilder tileBuilder = new StringBuilder();
+        StringBuilder fullTextBulider = new StringBuilder();
+
+        System.out.println("Tiled Query");
+        while (sr.hasMoreLines()) {
+            String line = sr.readLine();
+            if (!tileOpened && line.contains("<TILE>")) {
+                tileOpened = true;
+                tileBuilder.append(line.replace("<TILE>", ""));
+            } else if (line.contains("</TILE>")) {
+                tileOpened = false;
+                tileBuilder.append(line.replace("</TILE>", ""));
+                String stemmedText = stem.stemString(tileBuilder.toString(), false);
+                 System.out.println("TILE: " + tileBuilder.toString());
+                 List<ScoredDocument> docs = (List<ScoredDocument>) wr.runQuery(generateQuerybyFrequency(tileBuilder.toString(), 10));
+                 for (ScoredDocument sd : docs) {
+                      System.out.println(sd.documentName);
+                       }
+                fullTextBulider.append(tileBuilder.toString());
+                tileBuilder = new StringBuilder();
+                //
+            } else if (tileOpened) {
+                tileBuilder.append(line);
+            }
+        }
+        System.out.println("Full Query");
+        List<ScoredDocument> docs = (List<ScoredDocument>) wr.runQuery(generateQuerybyFrequency(fullTextBulider.toString(), 10));
+        for (ScoredDocument sd : docs) {
+            System.out.println(sd.documentName);
+        }
+
+    }
+
+    /**
+     * Comebine all different generated rankings to get the expanded polling
+     */
+    public static void mergeRankedListforPolling() {
+        GenAnnotation gen = new GenAnnotation("C:\\Users\\mhjang\\IdeaProjects\\WikiLinking2\\annotation\\");
+        try {
+            SimpleFileReader sr = new SimpleFileReader("C:\\Users\\mhjang\\IdeaProjects\\WikiLinking2\\expnotes\\tf vs tiling (large_scale)\\202 queries\\original_query_ranking.txt");
+            HashMap<String, HashSet<String>> querySet = new HashMap<String, HashSet<String>>();
+            while (sr.hasMoreLines()) {
+                String line = sr.readLine();
+                String[] tokens = line.split("\t");
+                if (!querySet.containsKey(tokens[0]))
+                    querySet.put(tokens[0], new HashSet<String>());
+                querySet.get(tokens[0]).add(tokens[2]);
+            }
+
+            sr = new SimpleFileReader("C:\\Users\\mhjang\\IdeaProjects\\WikiLinking2\\expnotes\\tf vs tiling (large_scale)\\202 queries\\tiled_query_ranking.txt");
+            while (sr.hasMoreLines()) {
+                String line = sr.readLine();
+                String[] tokens = line.split("\t");
+                if (!querySet.containsKey(tokens[0]))
+                    querySet.put(tokens[0], new HashSet<String>());
+                querySet.get(tokens[0]).add(tokens[2]);
+            }
+
+            sr = new SimpleFileReader("C:\\Users\\mhjang\\IdeaProjects\\WikiLinking2\\expnotes\\tf vs tiling (large_scale)\\202 queries\\tile_weight_7_tf3");
+            while (sr.hasMoreLines()) {
+                String line = sr.readLine();
+                String[] tokens = line.split("\t");
+                if (!querySet.containsKey(tokens[0]))
+                    querySet.put(tokens[0], new HashSet<String>());
+                querySet.get(tokens[0]).add(tokens[2]);
+            }
+
+            sr = new SimpleFileReader("C:\\Users\\mhjang\\IdeaProjects\\WikiLinking2\\expnotes\\3methods\\34 queries\\manual_query_ranking.txt");
+            while (sr.hasMoreLines()) {
+                String line = sr.readLine();
+                String[] tokens = line.split("\t");
+                if (!querySet.containsKey(tokens[0]))
+                    querySet.put(tokens[0], new HashSet<String>());
+                querySet.get(tokens[0]).add(tokens[2]);
+            }
+            DBConnector db = new DBConnector("jdbc:mysql://localhost/", "wikilinking");
+
+            for (String query : querySet.keySet()) {
+                gen.generateAnnotationPage(query, querySet.get(query));
+                db.sendQuery("INSERT INTO annotation_pages values ('" + query + "')");
+            }
+
+            db.closeConnection();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+
+
+    public static void main(String[] args) throws IOException {
+        DocumentQueryGenerator gen = new DocumentQueryGenerator();
+        gen.showQuery("clueweb09-en0010-57-10666");
         //   generateDropDownMenu();
+        // mergeRankedListforPolling();
+
+/*
         String dir = "C://Users/mhjang/Research/WikiLinking/tiled_bprm/";
         // a list of clueweb documents that are judged
         LinkedList<String> cluewebJudged = new LinkedList<String>();
@@ -83,12 +200,10 @@ public class DocumentQueryGenerator {
         }
 
 
-        DirectoryReader dr = new DirectoryReader(dir);
+        DirectoryManager dr = new DirectoryManager(dir);
         DocumentQueryGenerator queryGen = new DocumentQueryGenerator();
         Tile.sr = queryGen.sr;
         WikiRetrieval wr = new WikiRetrieval();
-        //    GenAnnotation gen = new GenAnnotation(annotationDir);
-        //    DirectoryReader dr2 = new DirectoryReader(annotationDir);
 
         HashMap<String, String> manualQuery = new HashMap<String, String>();
 
@@ -97,6 +212,7 @@ public class DocumentQueryGenerator {
         double avgFraction = 0.0;
 
         // read manual query
+        /*
         try {
             SimpleFileReader sr2 = new SimpleFileReader("manual_query.txt");
             String line;
@@ -111,17 +227,18 @@ public class DocumentQueryGenerator {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        */
 
-
+/*
         int tileNumSum = 0;
         int documentJudgedNum = 0;
         try {
             SimpleFileWriter tiled = new SimpleFileWriter("tiled_query_ranking.txt");
-            SimpleFileWriter original = new SimpleFileWriter("original_query_ranking.txt");
-            SimpleFileWriter tileNumWriter = new SimpleFileWriter("documents_tile_num.txt");
-    //        SimpleFileWriter manual = new SimpleFileWriter("manual_query_ranking.txt");
+            //        SimpleFileWriter original = new SimpleFileWriter("original_query_ranking.txt");
+            SimpleFileWriter tileNumWriter = new SimpleFileWriter("tile_query.txt");
+            //        SimpleFileWriter manual = new SimpleFileWriter("manual_query_ranking.txt");
             for (String filename : dr.getFileNameList()) {
-
+                filename = "clueweb09-en0003-25-20700";
                 // sometimes there is an error, you don't want to start the whole generation over.
                 // If the annotation file exists, it skips.
                 // If there is any change in polling, you need to clear up the annotation directory, otherwise it'll skip everything.
@@ -131,9 +248,9 @@ public class DocumentQueryGenerator {
                         continue;
                         }
                     */
-
+/*
                 if (!cluewebJudged.contains(filename.replace(".html", ""))) continue;
-            //    if (!manualQuery.containsKey(filename)) continue;
+                //         if (!manualQuery.containsKey(filename)) continue;
 
                 Multiset<String> weightedDocs = HashMultiset.create();
                 SimpleFileReader sr = new SimpleFileReader(dir + filename);
@@ -142,26 +259,27 @@ public class DocumentQueryGenerator {
                 HashSet<String> rankedSet = new HashSet<String>();
 
                 boolean tileOpened = false;
-                System.out.println("******************* " + filename + " *****************");
+             //   System.out.println("******************* " + filename + " *****************");
 
-                int numOfTiles = 0;
-
+                LinkedList<Tile> tiles = new LinkedList<Tile>();
+                Stemmer stem = new Stemmer();
                 while (sr.hasMoreLines()) {
                     String line = sr.readLine();
                     if (!tileOpened && line.contains("<TILE>")) {
                         tileOpened = true;
                         tileBuilder.append(line.replace("<TILE>", ""));
-                        numOfTiles++;
                     } else if (line.contains("</TILE>")) {
                         tileOpened = false;
                         tileBuilder.append(line.replace("</TILE>", ""));
-                        Tile t = new Tile(tileBuilder.toString());
+                        String stemmedText = stem.stemString(tileBuilder.toString(), false);
+                        Tile t = new Tile(stemmedText);
+                        tiles.add(t);
                         //       System.out.println("TILE: " + tileBuilder.toString());
-                    //    List<ScoredDocument> docs = (List<ScoredDocument>) wr.runQuery(queryGen.generateQuerybyFrequency(tileBuilder.toString(), k));
-                   //     int rankWeight = topK;
-                   //     for (ScoredDocument sd : docs) {
-                    //        weightedDocs.add(sd.documentName, rankWeight--);
-                   //     }
+                        //    List<ScoredDocument> docs = (List<ScoredDocument>) wr.runQuery(queryGen.generateQuerybyFrequency(tileBuilder.toString(), k));
+                        //     int rankWeight = topK;
+                        //     for (ScoredDocument sd : docs) {
+                        //        weightedDocs.add(sd.documentName, rankWeight--);
+                        //     }
                         fullTextBulider.append(tileBuilder.toString());
                         tileBuilder = new StringBuilder();
                         //
@@ -169,16 +287,53 @@ public class DocumentQueryGenerator {
                         tileBuilder.append(line);
                     }
                 }
+                tiles.add(new Tile(stem.stemString(fullTextBulider.toString(), false)));
 
-                if(numOfTiles == 1) continue;
-                tileNumWriter.writeLine(filename + "\t" + numOfTiles);
-                tileNumSum += numOfTiles;
+                if (tiles.size() == 1) continue;
+                tileNumWriter.writeLine(filename + "\t" + tiles.size());
+                tileNumSum += tiles.size();
                 documentJudgedNum++;
+
+
+                int idx = 1;
+                tileNumWriter.writeLine(filename);
+                // varying query size in tile
+                /*
+                for (Tile t : tiles) {
+                    int querySize = t.numOfTokens / 10;
+                    List<ScoredDocument> docs = (List<ScoredDocument>) wr.runQuery(queryGen.generateQuerybyFrequency(t.text, querySize));
+                    int rankWeight = topK;
+                    for (ScoredDocument sd : docs) {
+                        weightedDocs.add(sd.documentName, rankWeight--);
+                    }
+                    tileNumWriter.writeLine("tile " + idx++ + ": " + querySize);
+                }
+                */
+
+                // weighing tile importance
+                // normalize
+                /*
+                double denorm = 0.0;
+                for (Tile t : tiles) {
+                    denorm += (1.0 - t.stopwordContainment);
+                }
+                for (Tile t : tiles) {
+                    t.importance = (1.0 - t.stopwordContainment) / denorm;
+                }
+                */
+                //   String topGlobalQuery = queryGen.generateQuerybyFrequency(fullTextBulider.toString(), 3);
+ /*               for (Tile t : tiles) {
+                    List<ScoredDocument> docs = (List<ScoredDocument>) wr.runQuery(queryGen.generateQuerybyFrequency(t.text, 10));
+                    int rankWeight = 1000;
+                    for (ScoredDocument sd : docs) {
+                        weightedDocs.add(sd.documentName, (int) ((rankWeight--) * t.importance));
+                    }
+                }
 
 
                 int rank = 1;
 
-                System.out.println("Original Rank");
+     /*           System.out.println("Original Rank");
                 List<ScoredDocument> docs = (List<ScoredDocument>) wr.runQuery(queryGen.generateQuerybyFrequency(fullTextBulider.toString(), k));
 
                 for (ScoredDocument sd : docs) {
@@ -187,21 +342,23 @@ public class DocumentQueryGenerator {
                     if (rank == topK) break;
                     rank++;
                 }
+     */
 
-                System.out.println("Tiled Rank");
-                ImmutableMultiset<String> entryList = Multisets.copyHighestCountFirst(weightedDocs);
+            //    System.out.println("Tiled Rank");
+   /*             ImmutableMultiset<String> entryList = Multisets.copyHighestCountFirst(weightedDocs);
                 HashSet<String> topKDocsInTile = new HashSet<String>();
 
                 rank = 1;
                 for (Multiset.Entry<String> e : entryList.entrySet()) {
                     String documentName = e.getElement().replaceAll(".html", "");
-                    tiled.writeLine(filename + "\t 0 \t" + documentName + "\t" + rank + "\t" + e.getCount() + "\t" + "manual");
-            //        topKDocsInTile.add(e.getElement());
+                    tiled.writeLine(filename + "\t 0 \t" + documentName + "\t" + rank + "\t" + e.getCount() + "\t" + "tile");
+                    System.out.println(filename + "\t 0 \t" + documentName + "\t" + rank + "\t" + e.getCount() + "\t" + "tile");
+                    //        topKDocsInTile.add(e.getElement());
                     if (rank == topK) break;
                     rankedSet.add(e.getElement());
                     rank++;
                 }
-
+            }
                 /*
                 System.out.println("Manual Query");
                 rank = 1;
@@ -214,7 +371,7 @@ public class DocumentQueryGenerator {
             //        rankedSet.add(sd.documentName);
                 }
                 */
-            }
+            //     }
 
             /*
             int intersection = 0;
@@ -228,23 +385,27 @@ public class DocumentQueryGenerator {
             avgFraction += fraction;
             System.out.println("list fraction: " + fraction);
             */
-       //     manual.close();
-            tiled.close();
-            original.close();
+            //     manual.close();
+   /*         tiled.close();
+            //            original.close();
             tileNumWriter.close();
 
-        }catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         //   gen.generateAnnotationPage(filename, rankedSet);
 
         System.out.println("# of documents queried: " + documentJudgedNum + "\t");
-        System.out.println("# of document tiles: " + (double)tileNumSum/(double)documentJudgedNum);
+        System.out.println("# of document tiles: " + (double) tileNumSum / (double) documentJudgedNum);
 
 
-        //     avgFraction = avgFraction / (double) (dr.getFileNameList().size());
-        //       queryGen.generateQuerybyTFIDF(dir, filename, 10);
-    }
+                //     avgFraction = avgFraction / (double) (dr.getFileNameList().size());
+                //       queryGen.generateQuerybyTFIDF(dir, filename, 10);
+
+                //}
+                */
+        }
+
 
 
 
@@ -285,7 +446,6 @@ public class DocumentQueryGenerator {
     }
 
 
-
     // using top K frequency
     public String generateQuerybyFrequency(String text, int k) {
         try {
@@ -319,7 +479,6 @@ public class DocumentQueryGenerator {
 
     }
 
-
     // using top K frequency
     public String generateQuerybyFrequency(String dir, String filename, int k) {
         try {
@@ -336,20 +495,20 @@ public class DocumentQueryGenerator {
             String[] terms = stemmedString.split("\\s");
             for (String t : terms) {
                 if (!sr.stopwords.contains(t)) {
-                    docTermBag.add(t.trim().replace("."," "));
+                    docTermBag.add(t.trim().replace(".", " "));
                 }
             }
             int count = 0;
             StringBuilder query = new StringBuilder();
 
             for (String term : Multisets.copyHighestCountFirst(docTermBag).elementSet()) {
-                if(term.length() > 1) {
-      //              System.out.print(term + "( " + docTermBag.count(term) + " )");
+                if (term.length() > 1) {
+                    //              System.out.print(term + "( " + docTermBag.count(term) + " )");
                     query.append(term + " ");
                     if (count++ == k) break;
                 }
             }
-    //        System.out.println();
+            //        System.out.println();
             System.out.println(filename + ": " + query.toString());
             return query.toString();
 
@@ -357,6 +516,5 @@ public class DocumentQueryGenerator {
             e.printStackTrace();
         }
         return null;
-
     }
 }

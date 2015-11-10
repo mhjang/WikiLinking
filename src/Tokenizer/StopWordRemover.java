@@ -1,11 +1,8 @@
 package Tokenizer;
 
 
-import myungha.SimpleFileReader;
+import myungha.utils.SimpleFileReader;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;

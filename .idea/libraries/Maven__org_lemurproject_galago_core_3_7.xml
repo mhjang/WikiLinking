@@ -8,6 +8,7 @@
     </JAVADOC>
     <SOURCES>
       <root url="jar://$MAVEN_REPOSITORY$/org/lemurproject/galago/core/3.7/core-3.7-sources.jar!/" />
+      <root url="file://$USER_HOME$/Documents/galago/core/src/main/java" />
     </SOURCES>
   </library>
 </component>

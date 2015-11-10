@@ -1,0 +1,48 @@
+<component name="libraryTable">
+  <library name="lib">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/Documents/galago/lib/contrib-3.5.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/javassist-3.12.1.GA.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/xz-1.0.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/libthrift-0.8.0.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/reflections-0.9.8.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/jetty-6.1.5.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/xmlenc-0.52.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/stringtemplate-3.0.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/commons-logging-1.1.1.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/snappy-java-1.0.5-M4.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/jsr305-1.3.9.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/core-3.5.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/drmaa.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/jetty-embedded-6.1.5.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/jsp-api-2.1.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/drmaa-1.0.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/dom4j-1.6.1.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/guava-11.0.2.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/httpclient-4.1.2.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/commons-io-2.1.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/commons-compress-1.4.1.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/commons-httpclient-3.1.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/trove4j-3.0.2.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/jetty-util-6.1.5.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/ProteusTypes.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/servlet-api-2.5-6.1.5.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/httpcore-4.1.3.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/slf4j-nop-1.6.6.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/maven-plugin-api-2.0.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/gson-2.2.2.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/commons-lang-2.5.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/bliki-core-3.0.16.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/tupleflow-typebuilder-3.5.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/commons-codec-1.4.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/xml-apis-1.0.b2.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/json-20090211.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/antlr-2.7.7.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/tupleflow-3.5.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/slf4j-api-1.6.6.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/galago/lib/antlr-runtime-3.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

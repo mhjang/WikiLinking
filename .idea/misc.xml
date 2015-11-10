@@ -8,6 +8,7 @@
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$USER_HOME$/Documents/galago/pom.xml" />
+        <option value="$USER_HOME$/Documents/lemur-galago/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
@@ -17,6 +18,16 @@
         <option value="$USER_HOME$/Documents/galago/pom.xml" />
         <option value="$USER_HOME$/Documents/galago/tupleflow-typebuilder/pom.xml" />
         <option value="$USER_HOME$/Documents/galago/tupleflow/pom.xml" />
+        <option value="$USER_HOME$/Documents/lemur-galago/contrib/pom.xml" />
+        <option value="$USER_HOME$/Documents/lemur-galago/core/pom.xml" />
+        <option value="$USER_HOME$/Documents/lemur-galago/eval/pom.xml" />
+        <option value="$USER_HOME$/Documents/lemur-galago/krovetz-stemmer/pom.xml" />
+        <option value="$USER_HOME$/Documents/lemur-galago/pom.xml" />
+        <option value="$USER_HOME$/Documents/lemur-galago/snowball-stemmers/pom.xml" />
+        <option value="$USER_HOME$/Documents/lemur-galago/tupleflow-gridengine/pom.xml" />
+        <option value="$USER_HOME$/Documents/lemur-galago/tupleflow-typebuilder/pom.xml" />
+        <option value="$USER_HOME$/Documents/lemur-galago/tupleflow/pom.xml" />
+        <option value="$USER_HOME$/Documents/lemur-galago/utility/pom.xml" />
       </set>
     </option>
   </component>

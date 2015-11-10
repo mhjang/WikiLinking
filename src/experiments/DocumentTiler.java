@@ -1,4 +1,4 @@
-package Tokenizer;
+package experiments;
 
 import myungha.utils.SimpleFileReader;
 import simple.io.myungha.DirectoryReader;
@@ -17,7 +17,7 @@ public class DocumentTiler {
     HashMap<String, LinkedList<String>> documents;
 
     /**
-     * @param dir String directory to the clueweb document files
+     * @param dir String directory to the clueweb plain text
      */
     public DocumentTiler(String dir) {
         try {
@@ -27,8 +27,11 @@ public class DocumentTiler {
             for (String filename : dr.getFileNameList()) {
                 SimpleFileReader sr = new SimpleFileReader(dir + filename);
                 LinkedList<String> lines = new LinkedList<String>();
+                String line;
                 while (sr.hasMoreLines()) {
-                    lines.add(sr.readLine());
+                    line = sr.readLine().replace("<TILE>", ""); // because i'm using the text from tiled_bprm
+                    line = line.replace("</TILE>", "");
+                    lines.add(line);
                 }
                 filename = filename.replaceAll(".html", "");
                 documents.put(filename, lines);
@@ -40,13 +43,13 @@ public class DocumentTiler {
     }
 
     public static void main(String[] args) {
-        String dir = "C://Users/mhjang/Research/WikiLinking/clueweb_bprm/";
+        String dir = "C://Users/mhjang/Research/WikiLinking/tiled_bprm/";
         String dirToTile = "C://Users/mhjang/Research/WikiLinking/tiled_bprm/";
         String baseDir = "C://Users/mhjang/Research/WikiLinking/";
         DocumentTiler dt = new DocumentTiler(dir);
-        dt.clinchTile(dirToTile, baseDir + "clueweb_plaintext_clinch/");
-        dt.tileAllFixedNum(baseDir + "clueweb_plaintext_tilesize5/", 5);
-        dt.tileAllFixedSize(baseDir + "clueweb_plaintext_tilenum5/", 5);
+  //      dt.clinchTile(dirToTile, baseDir + "bprm_tile_clinch/");
+        dt.tileAllFixedNum(baseDir + "bprm_tilesize5/", 10);
+        dt.tileAllFixedSize(baseDir + "bprm_tilenum5/", 10);
     }
 
     /**
@@ -91,7 +94,7 @@ public class DocumentTiler {
                 for (Integer i : eachTileSize) {
                     misMatch += Math.abs(fixedTileSize - i);
                 }
-                sw.writeLine(filename + "\t" + (double) (misMatch) / (double) (numOfTiles));
+                sw.writeLine(filename + "\t" + numOfTiles + "\t" + (double) (misMatch) / (double) (numOfTiles));
 
             }
             sw.close();
@@ -112,35 +115,46 @@ public class DocumentTiler {
     private int tileFixedNum(String outputDir, String filename, int numOfTiles) {
         int tileSize = 0;
         try {
+            SimpleFileWriter sw = new SimpleFileWriter(outputDir + filename);
             LinkedList<String> lines = documents.get(filename);
             int documentSize = lines.size();
-            if(documentSize == 0) return 0;
-            SimpleFileWriter sw = new SimpleFileWriter(outputDir + filename);
             tileSize = (int) ((double) documentSize / (double) numOfTiles);
             boolean tileOpened = false;
             if(tileSize==0) {
                 System.out.println("Tile size zero error!:" + filename + "\t" + documentSize + ", " + numOfTiles);
                 sw.writeLine("<TILE>");
-                for (String l : lines) {
-                    sw.writeLine(l);
+                System.out.println("<TILE>");
+                for (int i = 0; i < documentSize; i++) {
+                    sw.writeLine(lines.get(i));
+                    System.out.println(lines.get(i));
+
                 }
                 sw.writeLine("</TILE>");
-                return 1;
-            }
-            for (int i = 0; i < documentSize; i++) {
-                if (i % tileSize == 0) {
-                    sw.writeLine("<TILE>");
-                    tileOpened = true;
-                }
-                sw.writeLine(lines.get(i));
+                System.out.println("</TILE>");
 
-                if (i % tileSize == tileSize - 1) {
-                    sw.writeLine("</TILE>");
-                    tileOpened = false;
+            }
+            else {
+                for (int i = 0; i < documentSize; i++) {
+                    if (i % tileSize == 0) {
+                        sw.writeLine("<TILE>");
+                        System.out.println("<TILE>");
+
+                        tileOpened = true;
+                    }
+                    sw.writeLine(lines.get(i));
+                    System.out.println(lines.get(i));
+                    if (i % tileSize == tileSize - 1) {
+                        sw.writeLine("</TILE>");
+                        System.out.println("</TILE>");
+
+                        tileOpened = false;
+                    }
                 }
             }
             if (tileOpened) {
                 sw.writeLine("</TILE>");
+                System.out.println("</TILE>");
+
             }
             sw.close();
         }catch(Exception e) {

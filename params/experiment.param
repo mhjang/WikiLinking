@@ -1,0 +1,13 @@
+{
+"querylist":"C:\\Users\\mhjang\\IdeaProjects\\WikiLinking2\\query_ranking_list",
+"experiment":[{"tiled": [
+               {
+                "weighted":false,
+                "tf_tile":true,
+                "tf_include":0,
+               }]}, "tf"],
+"querysize":10,
+"expDir":"C:\\Users\\mhjang\\IdeaProjects\\WikiLinking2\\exp",
+"retrieved":20,
+"data":"C:\\Users\\mhjang\\Research\\WikiLinking\\tiled_bprm"
+}

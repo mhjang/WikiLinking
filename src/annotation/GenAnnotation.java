@@ -1,12 +1,10 @@
 package annotation;
 
 import db.DBConnector;
-import myungha.DirectoryReader;
-import myungha.SimpleFileWriter;
+import myungha.utils.SimpleFileWriter;
 
 import java.io.IOException;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
@@ -62,7 +60,7 @@ public class GenAnnotation {
             builder.append("<input type =\"hidden\" name=\"size\" value=\""+list.size()+"\">");
             for(String item : list) {
                 item = item.replace(".html", "");
-                builder.append("<a href=\"http://en.wikipedia.org/wiki/" + item + "\" target=\"_blank\" class=\"list-group-item\">\n" +
+                builder.append("<a href=\"http://en.wikipedia.org/wiki/" + item + "\" target=\"reference\" class=\"list-group-item\">\n" +
                         "  \t<h4 class=\"list-group-item-heading\">" + item.replace("_", " ") + "</h4>\n" +
                         "  \t<input type=\"hidden\" name=\"w"+idx+"_title\" value = \"" + item + "\">\n" +
                         "<div class=\"btn-group\" data-toggle=\"buttons\">\n" +
@@ -120,7 +118,7 @@ public class GenAnnotation {
         DBConnector db = new DBConnector("jdbc:mysql://ayr.cs.umass.edu:3306/","wikilinking");
 
     /*
-        DirectoryReader dr = new DirectoryReader("/Users/mhjang/Desktop/Research/WikiLinking/data/annotation");
+        DirectoryManager dr = new DirectoryManager("/Users/mhjang/Desktop/Research/WikiLinking/data/annotation");
         for(String filename : dr.getFileNameList()) {
             filename = filename.replace(".html", "");
             db.sendQuery("INSERT into annotation_pages values ('" + filename + "')");

@@ -93,7 +93,8 @@ public class Task1 {
 
 
 
-            List<ScoredDocument> results = retrieval.executeQuery(transformed, p).scoredDocuments; // issue the query!
+            List<ScoredDocument> results;
+            results= (List<ScoredDocument>)retrieval.executeQuery(transformed, p).scoredDocuments; // issue the query!
             for (ScoredDocument sd : results) {
                 System.out.println(sd.toTRECformat(id));
                 bw.write(sd.toTRECformat(id) + "\n");

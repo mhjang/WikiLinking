@@ -1,4 +1,4 @@
-package myungha;
+package myungha.utils;
 
 import java.io.File;
 import java.io.FileWriter;
