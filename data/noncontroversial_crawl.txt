@@ -1,0 +1,88 @@
+q: dundee
+q1: is dundee in scotland
+http://www.visitscotland.com/en-us/info/towns-villages/dundee-p241551
+http://metro.co.uk/2014/04/17/12-reasons-dundee-is-the-best-city-in-the-uk-4700950/
+http://www.britannica.com/place/Dundee
+http://www.scotland.com/angus-dundee/dundee/
+http://www.dundee.com/visit-dundee.html
+http://www.scotland.org/features/dundee-city-of-discovery/
+http://wikitravel.org/en/Dundee
+q2: is dundee in fife
+http://www.scotlandmag.com/magazine/issue57/12010062.html
+http://www.dundee.ac.uk/studentservices/freethingstodoinfife.htm
+q3: is dundee a city
+http://www.dundeecity.gov.uk/lordprovostwelcome
+http://www.independent.co.uk/arts-entertainment/architecture/dundee-the-city-of-design-thats-pushing-the-boat-out-as-a-cultural-and-creative-powerhouse-9907176.html
+q: uranium
+http://www.world-nuclear.org/info/nuclear-fuel-cycle/introduction/what-is-uranium--how-does-it-work-/
+http://education.jlab.org/itselemental/ele092.html
+http://periodic.lanl.gov/92.shtml
+http://www.chemicalelements.com/elements/u.html
+http://www.livescience.com/39773-facts-about-uranium.html
+http://www.wired.com/2009/12/ff_new_nukes/
+http://www.vanityfair.com/news/2006/07/yellowcake200607
+http://www.nytimes.com/2015/04/24/us/cash-flowed-to-clinton-foundation-as-russians-pressed-for-control-of-uranium-company.html?_r=0
+http://ieer.org/resource/factsheets/uranium-its-uses-and-hazards/
+http://www.lenntech.com/periodic/elements/u.htm
+http://www.webelements.com/uranium/
+q: diamond
+http://www.theatlantic.com/international/archive/2015/02/how-an-ad-campaign-invented-the-diamond-engagement-ring/385376/
+http://www.nytimes.com/2015/04/26/magazine/the-secret-slang-of-the-diamond-district.html
+http://www.smithsonianmag.com/science-nature/diamonds-on-demand-48545144/?no-ist
+http://www.zales.com/jewelry101/index.jsp?page=diamonds
+q1: is diamond a mineral
+http://www.minerals.net/mineral/diamond.aspx
+http://flexiblelearning.auckland.ac.nz/rocks_minerals/minerals/diamond.html
+http://geology.com/minerals/diamond.shtml
+http://www.madsci.org/posts/archives/2003-12/1070390305.Es.r.html
+http://www.madsci.org/posts/archives/1999-09/938471294.Es.r.html
+https://www.mineralseducationcoalition.org/minerals/diamond
+http://www.galleries.com/diamond
+q2: is diamond element
+http://scienceline.ucsb.edu/getkey.php?key=980
+http://www.webelements.com/carbon/
+http://chemistry.about.com/cs/geochemistry/a/aa071601a.htm
+q: turkey
+http://wikitravel.org/en/Turkey
+http://www.lrb.co.uk/v36/n21/patrick-cockburn/whose-side-is-turkey-on
+http://www.nytimes.com/2014/02/09/magazine/whose-turkey-is-it.html?_r=0
+q1: is turkey bad for dogs
+http://www.caninejournal.com/is-turkey-bad-for-dogs/
+http://www.caninejournal.com/foods-not-to-feed-dog/
+http://www.nbclosangeles.com/news/local/Love-Your-Pets-Just-Dont-Feed-Them-Turkey-107946584.html
+http://www.petmd.com/dog/wellness/nutrition/evr_multi_holiday_scraps2
+http://dogs.thefuntimesguide.com/2008/11/dog_thanksgiving_turkey.php
+http://www.dogster.com/lifestyle/is-turkey-bad-for-dogs
+http://napasdailygrowl.com/is-turkey-bad-for-dogs/
+q2: is turkey in europe
+http://www.nationalreview.com/corner/352758/turkey-europe-daniel-pipes
+http://travel.nationalgeographic.com/travel/countries/turkey-facts/
+http://www.theguardian.com/commentisfree/2009/aug/06/turkey-eu-membership
+http://www.bbc.com/news/world-europe-17988453
+http://www.debatingeurope.eu/focus/infobox-arguments-for-and-against-turkeys-eu-membership/#.VjmW1berSUk
+http://www.moneysupermarket.com/travel-insurance/destinations/turkey/
+http://www.fairobserver.com/region/middle_east_north_africa/will-turkey-turn-europe-or-middle-east/
+q: cheese
+http://www.foodterms.com/encyclopedia/cheese/index.html
+http://www.forbes.com/sites/larryolmsted/2012/11/19/the-dark-side-of-parmesan-cheese-what-you-dont-know-might-hurt-you/
+http://www.theatlantic.com/politics/archive/2015/01/the-real-story-of-the-white-house-and-the-big-block-of-cheese/384676/
+http://www.wired.com/2014/03/everythingyoudidntknowyouwantedtoknow-about-the-science-of-cheese/
+http://www.idfa.org/news-views/media-kits/cheese/history-of-cheese
+q1: is cheese mold
+http://www.saucemagazine.com/blog/?p=4957
+http://www.mayoclinic.org/healthy-lifestyle/nutrition-and-healthy-eating/expert-answers/food-and-nutrition/faq-20058492
+http://www.streetdirectory.com/food_editorials/snacks/cheese/the_most_popular_cheeses_with_mold.html
+http://www.ehow.com/facts_6371041_cheese-really-mold_.html
+q2: is cheese gluten free
+http://www.glutenfreeliving.com/gluten-free-foods/diet/basic-diet/
+http://celiacdisease.about.com/od/GlutenFreeSnacks/f/Is-Cheese-Gluten-Free.htm
+http://healthyeating.sfgate.com/can-eat-sliced-american-cheese-glutenfree-diet-9920.html
+http://www.glutenfreeeasy.com/facts/safe.asp
+http://www.glutenfreegluten.com/cheese/
+http://gicare.com/diets/gluten-free-diet/
+http://www.organicvalley.coop/products/gluten-free-products/
+http://www.glutenfreedietitian.com/blue-cheese/
+q: red panda
+http://nationalzoo.si.edu/Animals/AsiaTrail/RedPanda/factsheet.cfm
+
+
