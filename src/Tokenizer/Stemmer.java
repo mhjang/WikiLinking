@@ -67,7 +67,7 @@ public class Stemmer {
      */
     public String stemString(String text, boolean includeLinkeBreaker) {
         StringBuilder sb = new StringBuilder();
-        StringTokenizer st = new StringTokenizer(text, " ,\n", false);
+        StringTokenizer st = new StringTokenizer(text, " ,.:;\'`\"\n", false);
         while(st.hasMoreTokens()) {
             String token = st.nextToken();
             String stem = stemmer.stem(token);

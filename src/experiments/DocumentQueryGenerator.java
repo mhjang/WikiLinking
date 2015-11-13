@@ -18,6 +18,7 @@ import db.DBConnector;
 import myungha.utils.DirectoryManager;
 import myungha.utils.SimpleFileReader;
 import myungha.utils.SimpleFileWriter;
+import org.lemurproject.galago.core.parse.TagTokenizer;
 import org.lemurproject.galago.core.retrieval.ScoredDocument;
 
 /*
@@ -26,6 +27,7 @@ import org.lemurproject.galago.core.retrieval.ScoredDocument;
 
 public class DocumentQueryGenerator {
     Stemmer stemmer = new Stemmer();
+    TagTokenizer tagTokenizer = new TagTokenizer();
     StopWordRemover sr = new StopWordRemover();
 
     public DocumentQueryGenerator() {
@@ -77,10 +79,10 @@ public class DocumentQueryGenerator {
 
     public void showQuery(String documentName) throws IOException {
         LinkedList<Tile> tiles = new LinkedList<Tile>();
-        Stemmer stem = new Stemmer();
         String baseDir = "C:\\Users\\mhjang\\Research\\WikiLinking\\tiled_bprm\\";
 
-        SimpleFileReader sr = new SimpleFileReader(baseDir + documentName);
+    //    SimpleFileReader sr = new SimpleFileReader(baseDir + documentName);
+        SimpleFileReader sr = new SimpleFileReader(documentName);
         WikiRetrieval wr = new WikiRetrieval();
 
 
@@ -93,11 +95,10 @@ public class DocumentQueryGenerator {
             String line = sr.readLine();
             if (!tileOpened && line.contains("<TILE>")) {
                 tileOpened = true;
-                tileBuilder.append(line.replace("<TILE>", ""));
+                tileBuilder.append(line.replace("<TILE>", "") + "\n");
             } else if (line.contains("</TILE>")) {
                 tileOpened = false;
-                tileBuilder.append(line.replace("</TILE>", ""));
-                String stemmedText = stem.stemString(tileBuilder.toString(), false);
+                tileBuilder.append(line.replace("</TILE>", "") + "\n");
                  System.out.println("TILE: " + tileBuilder.toString());
                  List<ScoredDocument> docs = (List<ScoredDocument>) wr.runQuery(generateQuerybyFrequency(tileBuilder.toString(), 10));
                  for (ScoredDocument sd : docs) {
@@ -107,7 +108,7 @@ public class DocumentQueryGenerator {
                 tileBuilder = new StringBuilder();
                 //
             } else if (tileOpened) {
-                tileBuilder.append(line);
+                tileBuilder.append(line + "\n");
             }
         }
         System.out.println("Full Query");
@@ -180,7 +181,7 @@ public class DocumentQueryGenerator {
 
     public static void main(String[] args) throws IOException {
         DocumentQueryGenerator gen = new DocumentQueryGenerator();
-        gen.showQuery("clueweb09-en0010-57-10666");
+        gen.showQuery("C:\\Users\\mhjang\\Downloads\\test_crawl\\vaccine.txt");
         //   generateDropDownMenu();
         // mergeRankedListforPolling();
 
@@ -452,12 +453,12 @@ public class DocumentQueryGenerator {
             text = text.replace("\t", " ");
             text = text.replace("\n", " ");
 
-            String stemmedString = stemmer.stemString(text, true);
+            org.lemurproject.galago.core.parse.Document queryDoc = tagTokenizer.tokenize(text);
             Multiset<String> docTermBag = HashMultiset.create();
-            String[] terms = stemmedString.split("\\s");
-            for (String t : terms) {
+
+            for (String t : queryDoc.terms) {
                 if (!sr.stopwords.contains(t)) {
-                    docTermBag.add(t.trim().replace("."," "));
+                    docTermBag.add(t);
                 }
             }
             int count = 0;

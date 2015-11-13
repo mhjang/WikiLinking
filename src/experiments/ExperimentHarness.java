@@ -60,7 +60,14 @@ public class ExperimentHarness {
         ArrayList<Parameters> tiledParam = (ArrayList<Parameters>) expParam.get(0).get("tiled");
         Parameters tp = tiledParam.get(0);
         boolean useTFTile = tp.get("tf_tile", false);
-        int querySize = (int) p.get("querySize", 10);
+        String qsize = p.get("querysize", "10");
+        int querySize;
+        if(qsize.equals("all"))
+                querySize = Integer.MAX_VALUE;
+        else
+            querySize = Integer.parseInt(qsize);
+        System.out.println("Query Size: " + querySize);
+ //       int querySize = (int) p.get("querySize", 10);
         boolean useWeightedTile = tp.get("weighted", false);
         int rankingMethod;
         String rankingMethodSig = p.get("aggregation", "additive");

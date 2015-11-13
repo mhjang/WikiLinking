@@ -1,7 +1,7 @@
 {
 "querylist":"C:\\Users\\mhjang\\IdeaProjects\\WikiLinking2\\query_list_10",
-"runTFBaseline":false,
-"runTile":true,
+"runTFBaseline":true,
+"runTile":false,
 "runManual":false,
 "experiment":[{"tiled": [
                {
@@ -9,7 +9,7 @@
                 "tf_tile":false,
                 "tf_include":0,
                }]}],
-"querysize":10,
+"querysize":"all",
 "expDir":"C:\\Users\\mhjang\\IdeaProjects\\WikiLinking2\\exp",
 "retrieved":20,
 "data":"C:\\Users\\mhjang\\Research\\WikiLinking\\tiled_bprm",
