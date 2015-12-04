@@ -68,7 +68,7 @@ public class DocumentTiler {
 
             DirectoryReader dr = new DirectoryReader(dirToTiled);
             System.out.println("clinching tiles");
-            SimpleFileWriter sw = new SimpleFileWriter("clinch_tile_comp.txt");
+            SimpleFileWriter sw = new SimpleFileWriter("qrel/clinch_tile_comp.txt");
             for (String filename : dr.getFileNameList()) {
                 SimpleFileReader sr = new SimpleFileReader(dirToTiled + filename);
                 boolean tileOpened = false;

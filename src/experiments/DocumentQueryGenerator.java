@@ -8,7 +8,10 @@ import Tokenizer.HTMLParser;
 import Tokenizer.Stemmer;
 import Tokenizer.StopWordRemover;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.sql.ResultSet;
 import java.util.*;
 
@@ -77,6 +80,37 @@ public class DocumentQueryGenerator {
     }
 
 
+    /**
+     * for the new dataset
+     */
+    public static void generateRanking() {
+        DocumentQueryGenerator gen = new DocumentQueryGenerator();
+        String cleanedDocPath = "C:\\Users\\mhjang\\Desktop\\pages_to_annotate_cleaned\\";
+        DirectoryManager dm = new DirectoryManager(cleanedDocPath);
+        WikiRetrieval wr = new WikiRetrieval();
+
+
+
+
+        try {
+            for (String fileName : dm.getFileNameList()) {
+                SimpleFileReader sr = new SimpleFileReader(cleanedDocPath + fileName);
+                StringBuilder sb = new StringBuilder();
+                while(sr.hasMoreLines()) {
+                    sb.append(sr.readLine());
+                }
+                String text = sb.toString();
+                List<ScoredDocument> results = wr.runQuery(gen.generateQuerybyFrequency(text, 10));
+                for(ScoredDocument sd : results) {
+                    System.out.println(fileName + "\t" + 0 + "\t" + sd.documentName + "\t" + sd.rank + "\t" + sd.score + "\t" + "original");
+                }
+            }
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public void showQuery(String documentName) throws IOException {
         LinkedList<Tile> tiles = new LinkedList<Tile>();
         String baseDir = "C:\\Users\\mhjang\\Research\\WikiLinking\\tiled_bprm\\";
@@ -119,56 +153,52 @@ public class DocumentQueryGenerator {
 
     }
 
+    private static void addPool(HashMap<String, HashSet<String>> querySet, String filePath) {
+        try {
+            SimpleFileReader sr = new SimpleFileReader(filePath);
+            while (sr.hasMoreLines()) {
+                String line = sr.readLine();
+                String[] tokens = line.split("\t");
+                if (!querySet.containsKey(tokens[0]))
+                    querySet.put(tokens[0], new HashSet<String>());
+                querySet.get(tokens[0]).add(tokens[2]);
+            }
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
     /**
      * Comebine all different generated rankings to get the expanded polling
      */
     public static void mergeRankedListforPolling() {
-        GenAnnotation gen = new GenAnnotation("C:\\Users\\mhjang\\IdeaProjects\\WikiLinking2\\annotation\\");
+        GenAnnotation gen = new GenAnnotation("C:\\Users\\mhjang\\Documents\\annotation_300");
         try {
-            SimpleFileReader sr = new SimpleFileReader("C:\\Users\\mhjang\\IdeaProjects\\WikiLinking2\\expnotes\\tf vs tiling (large_scale)\\202 queries\\original_query_ranking.txt");
+
             HashMap<String, HashSet<String>> querySet = new HashMap<String, HashSet<String>>();
-            while (sr.hasMoreLines()) {
-                String line = sr.readLine();
-                String[] tokens = line.split("\t");
-                if (!querySet.containsKey(tokens[0]))
-                    querySet.put(tokens[0], new HashSet<String>());
-                querySet.get(tokens[0]).add(tokens[2]);
+            HashMap<String, HashSet<String>> newQuerySet = new HashMap<String, HashSet<String>>();
+
+            addPool(querySet, "C:\\Users\\mhjang\\IdeaProjects\\WikiLinking2\\newdata_pooling.txt");
+            addPool(querySet, "C:\\Users\\mhjang\\IdeaProjects\\WikiLinking2\\newdata_pooling_sdm.txt");
+            addPool(newQuerySet, "C:\\Users\\mhjang\\IdeaProjects\\WikiLinking2\\exp\\exp_300_no_tftile_additive_3_7\\tile_ranking.run");
+
+
+
+
+
+            // DBConnector db = new DBConnector("jdbc:mysql://localhost/", "wikilinking");
+            for (String query : newQuerySet.keySet()) {
+ //               gen.generateAnnotationPage(query, querySet.get(query));
+//                db.sendQuery("INSERT INTO annotation_pages values ('" + query + "')");
+                HashSet<String> list = querySet.get(query);
+                HashSet<String> list2 = newQuerySet.get(query);
+                for(String s : list2) {
+                    if(!list.contains(s)) {
+                        System.out.println(query + "\t" + s);
+                    }
+                }
             }
 
-            sr = new SimpleFileReader("C:\\Users\\mhjang\\IdeaProjects\\WikiLinking2\\expnotes\\tf vs tiling (large_scale)\\202 queries\\tiled_query_ranking.txt");
-            while (sr.hasMoreLines()) {
-                String line = sr.readLine();
-                String[] tokens = line.split("\t");
-                if (!querySet.containsKey(tokens[0]))
-                    querySet.put(tokens[0], new HashSet<String>());
-                querySet.get(tokens[0]).add(tokens[2]);
-            }
-
-            sr = new SimpleFileReader("C:\\Users\\mhjang\\IdeaProjects\\WikiLinking2\\expnotes\\tf vs tiling (large_scale)\\202 queries\\tile_weight_7_tf3");
-            while (sr.hasMoreLines()) {
-                String line = sr.readLine();
-                String[] tokens = line.split("\t");
-                if (!querySet.containsKey(tokens[0]))
-                    querySet.put(tokens[0], new HashSet<String>());
-                querySet.get(tokens[0]).add(tokens[2]);
-            }
-
-            sr = new SimpleFileReader("C:\\Users\\mhjang\\IdeaProjects\\WikiLinking2\\expnotes\\3methods\\34 queries\\manual_query_ranking.txt");
-            while (sr.hasMoreLines()) {
-                String line = sr.readLine();
-                String[] tokens = line.split("\t");
-                if (!querySet.containsKey(tokens[0]))
-                    querySet.put(tokens[0], new HashSet<String>());
-                querySet.get(tokens[0]).add(tokens[2]);
-            }
-            DBConnector db = new DBConnector("jdbc:mysql://localhost/", "wikilinking");
-
-            for (String query : querySet.keySet()) {
-                gen.generateAnnotationPage(query, querySet.get(query));
-                db.sendQuery("INSERT INTO annotation_pages values ('" + query + "')");
-            }
-
-            db.closeConnection();
+  //          db.closeConnection();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -177,11 +207,20 @@ public class DocumentQueryGenerator {
 
 
 
-
-
     public static void main(String[] args) throws IOException {
         DocumentQueryGenerator gen = new DocumentQueryGenerator();
-        gen.showQuery("C:\\Users\\mhjang\\Downloads\\test_crawl\\vaccine.txt");
+
+        PrintStream console = System.out;
+
+        File file = new File("newly_added.txt");
+        FileOutputStream fos = new FileOutputStream(file);
+        PrintStream ps = new PrintStream(fos);
+        System.setOut(ps);
+
+
+    //    gen.generateRanking();
+        mergeRankedListforPolling();
+        // gen.showQuery("C:\\Users\\mhjang\\Downloads\\test_crawl\\vaccine.txt");
         //   generateDropDownMenu();
         // mergeRankedListforPolling();
 

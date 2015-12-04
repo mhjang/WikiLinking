@@ -77,9 +77,9 @@ public class ExperimentHarness {
             rankingMethod = RANKING_RECIPROCAL;
         String signature1;
         if (useTFTile)
-            signature1 = "weighted_tftile";
+            signature1 = "300_tftile_new";
         else
-            signature1 = "weighted_no_tftile";
+            signature1 = "300_no_tftile_new";
 
         boolean runTileExp = p.get("runTile", true);
         boolean runTFExp = p.get("runTFBaseline", false);
@@ -127,7 +127,6 @@ public class ExperimentHarness {
                     HashMap<String, Double> weightedRankedList = runTileExperiment(tiles, tfInclude, querySize, rankingMethod);
                     List<Map.Entry<String, Double>> entries = new LinkedList(weightedRankedList.entrySet());
                     Collections.sort((List) entries, new Comparator() {
-                        @Override
                         public int compare(Object o1, Object o2) {
                             Map.Entry<String, Double> m1 = (Map.Entry<String, Double>) (o1);
                             Map.Entry<String, Double> m2 = (Map.Entry<String, Double>) (o2);

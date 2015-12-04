@@ -1,17 +1,17 @@
 {
-"querylist":"C:\\Users\\mhjang\\IdeaProjects\\WikiLinking2\\query_list_10",
-"runTFBaseline":true,
-"runTile":false,
+"querylist":"querylist_300.txt",
+"runTFBaseline":false,
+"runTile":true,
 "runManual":false,
 "experiment":[{"tiled": [
                {
                 "weighted":true,
                 "tf_tile":false,
-                "tf_include":0,
+                "tf_include":3,
                }]}],
-"querysize":"all",
+"querysize":"10",
 "expDir":"C:\\Users\\mhjang\\IdeaProjects\\WikiLinking2\\exp",
 "retrieved":20,
-"data":"C:\\Users\\mhjang\\Research\\WikiLinking\\tiled_bprm",
+"data":"C:\\Users\\mhjang\\Desktop\\data300\\pages_tiled",
 "aggregation":"additive",
 }

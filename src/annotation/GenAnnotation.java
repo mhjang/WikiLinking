@@ -26,7 +26,7 @@ public class GenAnnotation {
 
     public void generateAnnotationPage(String cluewebId, HashSet<String> list) {
         try {
-            SimpleFileWriter sw = new SimpleFileWriter(annotationDir + cluewebId + ".html");
+            SimpleFileWriter sw = new SimpleFileWriter(annotationDir + cluewebId);
             StringBuilder builder = new StringBuilder();
 
             builder.append("<!DOCTYPE text/html>\n" +
@@ -43,21 +43,69 @@ public class GenAnnotation {
                     "  <tr>\n" +
                     " <?PHP session_start(); ?>\n" +
                     "  <td width=65% valign=\"top\">\n" +
-                    "    <iframe width=100% height=800px src=\"clueweb_pages/"+cluewebId+".html\" frameborder=0> </iframe>\n" +
+                    "    <iframe width=100% height=800px src=\"annotation_300_raw/"+cluewebId+"\" frameborder=0> </iframe>\n" +
                     "   </td>\n" +
                     "\t<td width=35% valign=\"top\">\n" +
-                    "\t\n" +
-                    "\n" +
-                    "\t<h4>3. Judge the relevance </h4>\n" +
-                    "<FORM name =\"form1\" id = \"annotationForm\" method =\"post\">\n" +
-                    "  \t<input type=\"hidden\" name=\"clueweb_id\" value = \""+cluewebId + "\">\n" +
-                    "\t<div class=\"list-group\">\n" +
+
+                    "<FORM name =\"form1\" id = \"controversyForm\" method =\"POST\">\n" +
+                    "<input type =\"hidden\" name=\"size\" value=\""+list.size()+"\">\n" +
+                    "<input type=\"hidden\" name=\"docname\" value = \""+cluewebId+"\">\n" +
+                    "  \n" +
+                    "  \n" +
+                    " <div class=\"list-group\">\n" +
+                            "  <a href=\"#\" class=\"list-group-item active\">\n" +
+                            "<h4>3. How controversial is this <u>topic</u>? </h4> \n" +
+                            "<a href=\"#\" class=\"list-group-item\">\n" +
+                            "<div class=\"btn-group\" data-toggle=\"buttons\">\n" +
+                            "<label class=\"btn btn-notsure\">\n" +
+                            "    <input type=\"radio\" name=\"topic_controversy\" id=\"option0\" value = \"0\" autocomplete=\"off\"> Not sure\n" +
+                            "  </label>\n" +
+                            "  <label class=\"btn btn-relevant\">\n" +
+                            "    <input type=\"radio\" name=\"topic_controversy\" id=\"option1\" value = \"1\" autocomplete=\"off\"> Clearly controversial\n" +
+                            "  </label>\n" +
+                            "  <label class=\"btn btn-somewhat\">\n" +
+                            "    <input type=\"radio\" name=\"topic_controversy\" id=\"option2\" value = \"2\" autocomplete=\"off\"> Possibly controversial \n" +
+                            "  </label>\n" +
+                            "  <label class=\"btn btn-slightlyon\">\n" +
+                            "    <input type=\"radio\" name=\"topic_controversy\" id=\"option3\" value = \"3\" autocomplete=\"off\"> Possibly non-controversial\n" +
+                            "  </label>\n" +
+                            "  <label class=\"btn btn-primary\">\n" +
+                            "    <input type=\"radio\" name=\"topic_controversy\" id=\"option4\" value = \"4\" autocomplete=\"off\"> Clearly non-controversial\n" +
+                            "  </label>\n" +
+                            "  </div>\n" +
+                            "</a>\n" +
+                            "\n" +
+                            "  <div class=\"list-group\">\n" +
+                            "  <a href=\"#\" class=\"list-group-item active\">\n" +
+                            "<h4>4. How controversial is this <u>page</u>? </h4> \n" +
+                            "<a href=\"#\" class=\"list-group-item\">\n" +
+                            "<div class=\"btn-group\" data-toggle=\"buttons\">\n" +
+                            "<label class=\"btn btn-notsure\">\n" +
+                            "    <input type=\"radio\" name=\"page_controversy\" id=\"option0\" value = \"0\" autocomplete=\"off\"> Not sure\n" +
+                            "  </label>\n" +
+                            "  <label class=\"btn btn-relevant\">\n" +
+                            "    <input type=\"radio\" name=\"page_controversy\" id=\"option1\" value = \"1\" autocomplete=\"off\"> Clearly controversial\n" +
+                            "  </label>\n" +
+                            "  <label class=\"btn btn-somewhat\">\n" +
+                            "    <input type=\"radio\" name=\"page_controversy\" id=\"option2\" value = \"2\" autocomplete=\"off\"> Possibly controversial \n" +
+                            "  </label>\n" +
+                            "  <label class=\"btn btn-slightlyon\">\n" +
+                            "    <input type=\"radio\" name=\"page_controversy\" id=\"option3\" value = \"3\" autocomplete=\"off\"> Possibly non-controversial\n" +
+                            "  </label>\n" +
+                            "  <label class=\"btn btn-primary\">\n" +
+                            "    <input type=\"radio\" name=\"page_controversy\" id=\"option4\" value = \"4\" autocomplete=\"off\"> Clearly non-controversial\n" +
+                            "  </label>\n" +
+                            "  </div>\n" +
+                            "</a>"+
+                    "<div class=\"list-group\">\n" +
                     "  <a href=\"#\" class=\"list-group-item active\">\n" +
-                    "\tWikipedia Articles\n" +
-                    "  </a>\n");
+                    "<h4>4. Judge the level of Wikipedia's relevance </h4> ");
+
+
 
             int idx = 0;
-            builder.append("<input type =\"hidden\" name=\"size\" value=\""+list.size()+"\">");
+
+
             for(String item : list) {
                 item = item.replace(".html", "");
                 builder.append("<a href=\"http://en.wikipedia.org/wiki/" + item + "\" target=\"reference\" class=\"list-group-item\">\n" +
@@ -98,7 +146,7 @@ public class GenAnnotation {
                     "    <script src=\"js/bootstrap.min.js\"></script>\n" +
                     "<script>$(document).ready(function() { \n" +
                             "$('#submitButton').click(function() { \n"
-                    + " var f = $('#annotationForm');\n" +
+                    + " var f = $('#controversyForm');\n" +
                     "$.ajax({ type: \"POST\", url: \"sendQuery.php\", data: f.serialize()}); \n"
                     + "alert(\"Thanks for your submission!\");"+
                     "});\n }); \n</script>" +

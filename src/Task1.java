@@ -4,17 +4,12 @@ import org.lemurproject.galago.core.parse.Document;
 import org.lemurproject.galago.core.retrieval.Retrieval;
 import org.lemurproject.galago.core.retrieval.RetrievalFactory;
 import org.lemurproject.galago.core.retrieval.ScoredDocument;
-import org.lemurproject.galago.core.retrieval.prf.RelevanceModel1;
 import org.lemurproject.galago.core.retrieval.query.Node;
 import org.lemurproject.galago.core.retrieval.query.StructuredQuery;
 import org.lemurproject.galago.tupleflow.Parameters;
 
 import java.io.*;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.StringTokenizer;
-
-import static java.lang.System.out;
 
 /**
  * Created by mhjang on 3/19/14.
@@ -52,7 +47,7 @@ public class Task1 {
     public static void runQueries(String queryFile, String output) throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(new File(queryFile)));
         String line;
-        String jsonConfigFile = "search.params";
+        String jsonConfigFile = "qrel/search.params";
         Parameters globalParams = Parameters.parseFile(jsonConfigFile);
         // globalParams.set("index", "your/index/here"); // an alternative way to select the index
         Retrieval retrieval = RetrievalFactory.instance(globalParams);

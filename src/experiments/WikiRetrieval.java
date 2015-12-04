@@ -31,7 +31,7 @@ public class WikiRetrieval {
 
     public void readByWikiId() throws Exception{
         Document.DocumentComponents dc = new Document.DocumentComponents(true,false,true);
-        String jsonConfigFile = "search.params";
+        String jsonConfigFile = "qrel/search.params";
         Parameters globalParams = Parameters.parseFile(jsonConfigFile);
         Retrieval retrieval= RetrievalFactory.instance(globalParams);
         Document d = retrieval.getDocument("Model_figure",dc);
@@ -41,7 +41,7 @@ public class WikiRetrieval {
     }
     public List<ScoredDocument> runQuery(String query) {
         try {
-            String jsonConfigFile = "search.params";
+            String jsonConfigFile = "qrel/search.params";
             query = query.replaceAll("#","");
             query = query.replaceAll("\"","");
 
@@ -58,17 +58,18 @@ public class WikiRetrieval {
             List<ScoredDocument> results = null;
 
             String tokenizedQuery = StrUtil.join(d.terms, " ");
-            Node root = StructuredQuery.parse(tokenizedQuery);
-            System.out.println("Query: " + tokenizedQuery);
+            Node root = StructuredQuery.parse("#sdm(" + tokenizedQuery + ")");
+          //  System.out.println("Query: " + tokenizedQuery);
             Node transformed = retrieval.transformQuery(root, p);
             results = (List<ScoredDocument>) retrieval.executeQuery(transformed, p).scoredDocuments; // issue the query!
 
-            for(ScoredDocument sd:results){ // print results
+        //    for(ScoredDocument sd:results){ // print results
          //       System.out.println(sd.rank+" "+sd.documentName+ " ("+sd.score+")");
-                Document document = retrieval.getDocument(sd.documentName, new Document.DocumentComponents(true, true, true));
+
+         //       Document document = retrieval.getDocument(sd.documentName, new Document.DocumentComponents(true, true, true));
 
 
-            }
+        //    }
             return results;
 
         }catch(Exception e) {

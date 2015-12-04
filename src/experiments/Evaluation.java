@@ -16,7 +16,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -128,7 +127,7 @@ public class Evaluation {
 
 
     public static void queryEval(String file) throws IOException {
-        QuerySetJudgments qset = new QuerySetJudgments("wiki3.qrel", true, true);
+        QuerySetJudgments qset = new QuerySetJudgments("qrel/wiki3.qrel", true, true);
         Parameters p = new Parameters();
         p.set("baseline", file);
         p.set("details", false);
@@ -190,10 +189,10 @@ public class Evaluation {
 
     public static void countJudgedItems() throws IOException {
         // how many relevant articles are there for each query?
-        QuerySetJudgments qset = new QuerySetJudgments("wiki3.qrel", false, true);
+        QuerySetJudgments qset = new QuerySetJudgments("qrel/wiki3.qrel", false, true);
         HashMap<String, String> manualQuery = new HashMap<String, String>();
         try {
-            SimpleFileReader sr2 = new SimpleFileReader("manual_query.txt");
+            SimpleFileReader sr2 = new SimpleFileReader("qrel/manual_query.txt");
             String line;
             int qsSizeSum = 0;
             int numOfQueries = 0;
@@ -227,7 +226,7 @@ public class Evaluation {
 
             // how many items in the retrieved list are judged
          //   SimpleFileWriter sw = new SimpleFileWriter("C:\\Users\\mhjang\\IdeaProjects\\WikiLinking2\\expnotes\\tf vs tiling (large_scale)\\202 queries\\tile_weight_7_tf3_testset");
-            SimpleFileReader sr3 = new SimpleFileReader("query_ranking_list");
+            SimpleFileReader sr3 = new SimpleFileReader("qrel/query_ranking_list");
             LinkedList<String> queryList = new LinkedList<String>();
             while(sr3.hasMoreLines()) {
                 queryList.add(sr3.readLine());
